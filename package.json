@@ -1,0 +1,15 @@
+{
+	"name": "filas-app",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"devStart": "nodemon server.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"nodemon": "^2.0.2",
+		"socket.io": "^2.3.0"
+	}
+}
