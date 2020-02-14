@@ -17,7 +17,6 @@ const con = mysql.createConnection({
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-// app.engine('html', require('ejs').renderFile);
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(
@@ -33,16 +32,21 @@ app.get('/', (req, res) => {
 	// res.render('index.ejs');
 });
 
-app.get('/test', (req, res) => {
+app.get('/dashboard', (req, res) => {
 	if (req.session.loggedin) {
-		res.render('test.ejs', { nome: req.session.nome });
+		res.render('dashboard.ejs', { nome: req.session.nome });
 	} else {
 		res.redirect('/');
 	}
 });
 
 app.get('/logout', (req, res) => {
-	// TODO session destroy
+	// Session destroy
+	req.session.destroy(function(e) {
+		if (e) {
+			console.log(e);
+		}
+	});
 	res.redirect('/');
 });
 
@@ -55,16 +59,21 @@ app.post('/login', (req, res) => {
 	const password = req.body.password;
 	async function checkUser(email, password) {
 		con.query('SELECT nome, password FROM users WHERE email = ?', [ email ], async function(err, result) {
-			const hashedPassword = result[0].password;
+			if (result.length > 0) {
+				const hashedPassword = result[0].password;
 
-			const match = await bcrypt.compare(password, hashedPassword);
+				const match = await bcrypt.compare(password, hashedPassword);
 
-			if (match) {
-				req.session.loggedin = true;
-				req.session.nome = result[0].nome;
-				res.redirect('/test');
+				if (match) {
+					req.session.loggedin = true;
+					req.session.nome = result[0].nome;
+					res.redirect('/dashboard');
+				} else {
+					// TODO Msg de erro
+					res.redirect('/login');
+				}
 			} else {
-				// TODO Msg de erro
+				// TODO email inválido - msg de erro
 				res.redirect('/login');
 			}
 		});

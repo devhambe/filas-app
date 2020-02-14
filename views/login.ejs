@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+    <title>Login</title>
 </head>
 <body>
-    <form action="/login" method="POST">
-        <div>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required>
+    <div class="row">
+        <div class="col-4 m-auto">
+            <form action="/login" method="POST" class="form-login">
+                <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+                <input type="email" name="email" id="email" required class="form-control" placeholder="Email">
+                <input type="password" name="password" id="password" required class="form-control" placeholder="Password">
+                <div class="mb-3"></div>
+                <button type="submit" class="btn btn-lg btn-dark btn-block">Login</button>
+            </form>
         </div>
-
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
-        </div>
-
-        <button type="submit">Login</button>
-
-    </form>
+    </div>
     <a href="/register">Registar</a>
 </body>
 </html>
