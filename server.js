@@ -17,6 +17,9 @@ const con = mysql.createConnection({
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
+app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
+app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(
