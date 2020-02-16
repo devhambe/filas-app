@@ -1,12 +1,10 @@
 //npm run devStart
 const express = require('express');
 const path = require('path');
-
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const session = require('express-session');
-
 const bcrypt = require('bcrypt');
 const mysql = require('mysql');
 const con = mysql.createConnection({
@@ -31,8 +29,20 @@ app.use(
 );
 
 app.get('/', (req, res) => {
+	// res.render('login.ejs');
+	res.render('index.ejs');
+});
+
+app.get('/senhas', (req, res) => {
+	res.render('senhas.ejs');
+});
+
+app.get('/wait', (req, res) => {
+	res.render('wait.ejs');
+});
+
+app.get('/login', (req, res) => {
 	res.render('login.ejs');
-	// res.render('index.ejs');
 });
 
 app.get('/dashboard', (req, res) => {
@@ -50,11 +60,7 @@ app.get('/logout', (req, res) => {
 			console.log(e);
 		}
 	});
-	res.redirect('/');
-});
-
-app.get('/login', (req, res) => {
-	res.render('login.ejs');
+	res.redirect('/login');
 });
 
 app.post('/login', (req, res) => {
@@ -109,4 +115,30 @@ app.post('/register', async (req, res) => {
 		res.redirect('/register');
 	}
 });
-server.listen(3000);
+
+const users = {};
+
+// class Fila {
+// 	constructor(id, pessoas) {
+// 		this.id = id;
+// 		this.pessoas = pessoas;
+// 	}
+// }
+
+io.on('connection', (socket) => {
+	socket.on('new-user', (username) => {
+		users[socket.id] = username;
+		const numUsers = Object.keys(users).length;
+		io.sockets.emit('users-in-fila', numUsers);
+	});
+
+	socket.on('disconnect', () => {
+		delete users[socket.id];
+		const numUsers = Object.keys(users).length;
+		io.sockets.emit('users-in-fila', numUsers);
+	});
+});
+
+server.listen(3000, function() {
+	console.log(new Date() + '\nServer a correr na porta 3000');
+});

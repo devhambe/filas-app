@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1 id=fila-status></h1>
+        <div class="div-buttons">
+            <button class="btn btn-primary btn-senha">
+                A - Coisa 1
+            </button>
+        </div>
+    </div>
+
+    <!--
+    <button class="btn-senha" id="filaA" value="A">
+        A - Coisa 1
+    </button>
+
+    <button class="btn-senha" id="filaB" value="B">
+        B - Coisa 2
+    </button>
+
+    <button class="btn-senha" id="filaC" value="C">
+        C - Coisa 3
+    </button> -->
+</body>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io('http://localhost:3000');
+
+const btnSenha = $('.btn-senha');
+const username = prompt('username: ');
+
+btnSenha.click(function() {
+    $(this).hide();
+    // const fila = $(this).val();
+    // socket.emit('new-user', {username: username, fila: fila});
+    socket.emit('new-user', username);
+});
+
+socket.on('users-in-fila', (numUsers) => {
+    $('#fila-status').text('Existem ' + numUsers + ' pessoas na fila');
+});
+
+</script>
+
+</html>

@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
     <title>Document</title>
 </head>
-<body>
 
+<body>
+    <!-- temporario so pra navegação -->
+    <a href="/senhas">senhas</a>
+    <a href="/login">login</a>
+    <h1 id=fila-status>Existem 0 pessoas na fila</h1>
 </body>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io('http://localhost:3000');
+
+socket.on('users-in-fila', (numUsers) => {
+    $('#fila-status').text('Existem ' + numUsers + ' pessoas na fila');
+});
+</script>
+
 </html>

@@ -4,13 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Bem vindo <%= nome %> </h1>
-    <a href="/logout">LOGOUT</a>
+    <!-- <h1>Bem vindo <%= nome %> </h1>
+    <a href="/logout">LOGOUT</a> -->
+    <div class="d-flex wrapper">
+
+        <nav class="sidebar">
+            <div class="sidebar-heading">Dashboard</div>
+            <div class="list-group list-group-flush">
+                <a href="" class="list-group-item list-group-item-action">AAAAA</a>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="content">
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        A
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        asdhuyasd
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        ...
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn">CHAMAR</button>
+                    </div>
+                </div>
+                <!-- <div class="fila">
+                    TEST
+                </div> -->
+            </div>
+        </div>
+
+    </div>
 </body>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/a747b443e5.js" crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io('http://localhost:3000');
+
+socket.on('users-in-fila', (numUsers) => {
+    $('#qtd-em-fila').text(numUsers);
+});
+</script>
+
 </html>
