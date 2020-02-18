@@ -98,7 +98,7 @@ app.post('/register', async (req, res) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-		var sql =
+		const sql =
 			'INSERT INTO users (nome, email, password) VALUES ("' +
 			req.body.nome +
 			'", "' +
@@ -116,26 +116,87 @@ app.post('/register', async (req, res) => {
 	}
 });
 
-const users = {};
+const filaA = { id: 0 };
+const filaB = { id: 0 };
+const filaC = { id: 0 };
+const filaD = { id: 0 };
 
-// class Fila {
-// 	constructor(id, pessoas) {
-// 		this.id = id;
-// 		this.pessoas = pessoas;
-// 	}
-// }
+// Método para enviar o nº de users presentes na fila
+function getUsersInFila(obj, fila) {
+	const numUsers = Object.keys(obj).length - 1;
+	io.to(fila).emit('users-in-fila', numUsers);
+}
 
+// Método para adicionar um novo user à fila
+function addToFila(socket, fila, obj) {
+	obj.id++;
+	obj[socket.id] = fila + obj.id;
+	getUsersInFila(obj, fila);
+}
+
+// Método para remover um user da fila
+function removeFromFila(socket, obj) {
+	if (obj[socket.id]) {
+		for (const key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				delete obj[socket.id];
+			}
+		}
+		io.sockets.emit('user-left');
+		socket.disconnect();
+	}
+}
+
+// Eventos Socket.IO
+
+// EVENTO onConnection
 io.on('connection', (socket) => {
-	socket.on('new-user', (username) => {
-		users[socket.id] = username;
-		const numUsers = Object.keys(users).length;
-		io.sockets.emit('users-in-fila', numUsers);
+	// EVENTO na ligação de um novo user
+	socket.on('new-user', (fila) => {
+		currFila = fila;
+		socket.join(fila, () => {
+			switch (fila) {
+				case 'A':
+					addToFila(socket, fila, filaA);
+					break;
+				case 'B':
+					addToFila(socket, fila, filaB);
+					break;
+				case 'C':
+					addToFila(socket, fila, filaC);
+					break;
+				case 'D':
+					addToFila(socket, fila, filaD);
+					break;
+			}
+		});
 	});
 
+	// EVENTO para retornar o nº de users presentes na fila
+	socket.on('get-number-users', (fila) => {
+		const numUsers = 0;
+		switch (fila) {
+			case 'A':
+				getUsersInFila(filaA, fila);
+				break;
+			case 'B':
+				getUsersInFila(filaB, fila);
+				break;
+			case 'C':
+				getUsersInFila(filaC, fila);
+				break;
+			case 'D':
+				getUsersInFila(filaD, fila);
+				break;
+		}
+	});
+
+	// EVENTO onDisconnect
 	socket.on('disconnect', () => {
-		delete users[socket.id];
-		const numUsers = Object.keys(users).length;
-		io.sockets.emit('users-in-fila', numUsers);
+		removeFromFila(socket, filaA);
+		removeFromFila(socket, filaB);
+		removeFromFila(socket, filaC);
+		removeFromFila(socket, filaD);
 	});
 });
 

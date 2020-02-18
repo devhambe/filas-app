@@ -58,9 +58,11 @@
 <script>
 const socket = io('http://localhost:3000');
 
-socket.on('users-in-fila', (numUsers) => {
-    $('#qtd-em-fila').text(numUsers);
-});
+
+// TODO mostrar isto para cada fila
+// socket.on('users-in-fila', (numUsers) => {
+//     $('#qtd-em-fila').text(numUsers);
+// });
 </script>
 
 </html>
