@@ -13,9 +13,10 @@
     <div class="d-flex wrapper">
 
         <nav class="sidebar">
-            <div class="sidebar-heading">Dashboard</div>
+            <div class="sidebar-heading">Bem vindo(a) <%= nome %></div>
             <div class="list-group list-group-flush">
-                <a href="" class="list-group-item list-group-item-action">AAAAA</a>
+                <a href="/dashboard" class="list-group-item list-group-item-action">Gestão de filas</a>
+                <a href="/logout" class="list-group-item list-group-item-action">Logout</a>
             </div>
         </nav>
 
@@ -31,11 +32,11 @@
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
-                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                        <i class="fas fa-users"></i> <span id="qtd-A">0</span>
                     </div>
                     <div class="fila-next col-5">
                         <p>Próxima senha</p>
-                        ...
+                        <span id="next-A">...</span>
                     </div>
                     <div class="fila-call col-1">
                         <button class="btn">CHAMAR</button>
@@ -51,11 +52,11 @@
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
-                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                        <i class="fas fa-users"></i> <span id="qtd-B">0</span>
                     </div>
                     <div class="fila-next col-5">
                         <p>Próxima senha</p>
-                        ...
+                        <span id="next-B">...</span>
                     </div>
                     <div class="fila-call col-1">
                         <button class="btn">CHAMAR</button>
@@ -71,11 +72,11 @@
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
-                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                        <i class="fas fa-users"></i> <span id="qtd-C">0</span>
                     </div>
                     <div class="fila-next col-5">
                         <p>Próxima senha</p>
-                        ...
+                        <span id="next-C">...</span>
                     </div>
                     <div class="fila-call col-1">
                         <button class="btn">CHAMAR</button>
@@ -91,11 +92,11 @@
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
-                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                        <i class="fas fa-users"></i> <span id="qtd-D">0</span>
                     </div>
                     <div class="fila-next col-5">
                         <p>Próxima senha</p>
-                        ...
+                        <span id="next-D">...</span>
                     </div>
                     <div class="fila-call col-1">
                         <button class="btn">CHAMAR</button>
@@ -115,20 +116,23 @@
 <script>
 const socket = io('http://localhost:3000');
 
-
-// TODO mostrar isto para cada fila
-// socket.on('users-in-fila', (numUsers) => {
-//     $('#qtd-em-fila').text(numUsers);
-// });
+function populate(elements, array) {
+    for (i in elements) {
+        if(array[i] !== null) {
+            $(elements[i]).text(array[i]);
+        } else if(array[i] == undefined) {
+            $(elements[i]).text('...');
+        }
+    }
+}
 
 socket.emit('dashboard');
 
-socket.on('test', (test123) => {
-    console.log(test123);
-});
-
-socket.on('users-in-fila', (arr) => {
-    console.log(arr);
+socket.on('dashboard-filas', (data) => {
+    const qtd = ['#qtd-A', '#qtd-B', '#qtd-C', '#qtd-D'];
+    const next = ['#next-A', '#next-B', '#next-C', '#next-D'];
+    populate(qtd, data.arrayUsers);
+    populate(next, data.arraySenhas);
 });
 </script>
 
