@@ -122,7 +122,7 @@ const filaC = { id: 0 };
 const filaD = { id: 0 };
 
 // Método para enviar o nº de users presentes na fila
-function getUsersInFila(obj, fila) {
+function sendUsersInFila(obj, fila) {
 	const numUsers = Object.keys(obj).length - 1;
 	io.to(fila).emit('users-in-fila', numUsers);
 }
@@ -131,7 +131,7 @@ function getUsersInFila(obj, fila) {
 function addToFila(socket, fila, obj) {
 	obj.id++;
 	obj[socket.id] = fila + obj.id;
-	getUsersInFila(obj, fila);
+	sendUsersInFila(obj, fila);
 }
 
 // Método para remover um user da fila
@@ -177,22 +177,43 @@ io.on('connection', (socket) => {
 		const numUsers = 0;
 		switch (fila) {
 			case 'A':
-				getUsersInFila(filaA, fila);
+				sendUsersInFila(filaA, fila);
 				break;
 			case 'B':
-				getUsersInFila(filaB, fila);
+				sendUsersInFila(filaB, fila);
 				break;
 			case 'C':
-				getUsersInFila(filaC, fila);
+				sendUsersInFila(filaC, fila);
 				break;
 			case 'D':
-				getUsersInFila(filaD, fila);
+				sendUsersInFila(filaD, fila);
 				break;
 		}
 	});
 
+	socket.on('dashboard', () => {
+		var filas = [ 'A', 'B', 'C', 'D' ];
+		for (fila in filas) {
+			socket.join(filas[fila]);
+		}
+		// var arr = [];
+		// var objects = [ filaA, filaB, filaC, filaD ];
+		// for (obj in objects) {
+		// 	const numUsers = Object.keys(obj).length - 1;
+		// 	arr.push(numUsers);
+		// }
+		// TODO ----------------------
+		console.log('Users filaA:' + (Object.keys(filaA).length - 1));
+		console.log('Users filaB:' + (Object.keys(filaB).length - 1));
+		console.log('Users filaC:' + (Object.keys(filaC).length - 1));
+		console.log('Users filaD:' + (Object.keys(filaD).length - 1));
+		// socket.emit('users-in-fila', arr);
+		// console.log(io.sockets.adapter.rooms);
+	});
+
 	// EVENTO onDisconnect
 	socket.on('disconnect', () => {
+		// TODO spaghet
 		removeFromFila(socket, filaA);
 		removeFromFila(socket, filaB);
 		removeFromFila(socket, filaC);

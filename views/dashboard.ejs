@@ -41,9 +41,66 @@
                         <button class="btn">CHAMAR</button>
                     </div>
                 </div>
-                <!-- <div class="fila">
-                    TEST
-                </div> -->
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        B
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        asdhuyasd
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        ...
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn">CHAMAR</button>
+                    </div>
+                </div>
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        C
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        asdhuyasd
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        ...
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn">CHAMAR</button>
+                    </div>
+                </div>
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        D
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        asdhuyasd
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-em-fila">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        ...
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn">CHAMAR</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -63,6 +120,16 @@ const socket = io('http://localhost:3000');
 // socket.on('users-in-fila', (numUsers) => {
 //     $('#qtd-em-fila').text(numUsers);
 // });
+
+socket.emit('dashboard');
+
+socket.on('test', (test123) => {
+    console.log(test123);
+});
+
+socket.on('users-in-fila', (arr) => {
+    console.log(arr);
+});
 </script>
 
 </html>
