@@ -10,18 +10,52 @@
 </head>
 
 <body>
-    <!-- temporario so pra navegação -->
-    <a href="/senhas">senhas</a>
-    <a href="/login">login</a>
     <!-- <h1 id=fila-status>Existem 0 pessoas na fila</h1> -->
+
+    <div class="container-fluid h-100">
+        <!-- temporario so pra navegação -->
+        <!-- <a href="/senhas">senhas</a>
+        <a href="/login">login</a> -->
+
+
+        <div class="row h-100">
+            <div class="col-md-5 div-senhas text-center">
+                <div class="row">
+                    <div class="col ">
+                        Senha
+                    </div>
+
+                    <div class="col ">
+                        Balcão
+                    </div>
+                </div>
+            </div>
+
+            <div class=" col-md-7 div-slideshow">
+                <div class="row p-3 text-center">
+                    <div id='data-atual' class="col relogio"></div>
+                    <div id='tempo-atual' class="col relogio"></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        aaaaa
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
 const socket = io('http://localhost:3000');
+
+getTime();
+getDate();
 
 // TODO mostrar isto para cada fila
 // socket.on('users-in-fila', (numUsers) => {

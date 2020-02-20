@@ -47,7 +47,7 @@ body {
 .sidebar {
 	min-height: 100vh;
 	margin-left: 0;
-	background: #1b1e27;
+	background: #140a2c;
 }
 
 .sidebar .sidebar-heading {
@@ -61,7 +61,7 @@ body {
 }
 
 .sidebar .list-group-item {
-	background: #1b1e27;
+	background: #140a2c;
 	color: white;
 }
 
@@ -114,4 +114,20 @@ body {
 .fila .fila-call .btn {
 	background: #1b1e27;
 	color: white;
+}
+
+.div-senhas {
+	background: white;
+	color: #140a2c;
+	padding: 20px;
+	font-size: 40px;
+}
+
+.div-slideshow {
+	background: #140a2c;
+	color: white;
+}
+
+.relogio {
+	font-size: 22px;
 }
