@@ -48,7 +48,7 @@ btnSenha.click(function() {
 });
 
 socket.on('users-in-fila', (numUsers) => {
-    $('#fila-status').text(`Existe(m) ${numUsers} pessoa(s) na fila`);
+    $('#fila-status').text(`${numUsers} pessoa(s) à sua frente`);
 });
 
 socket.on('user-left', () => {

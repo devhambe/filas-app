@@ -14,8 +14,8 @@
 
     <div class="container-fluid h-100">
         <!-- temporario so pra navegação -->
-        <!-- <a href="/senhas">senhas</a>
-        <a href="/login">login</a> -->
+        <!-- <a href="/senhas">senhas</a> -->
+        <!-- <a href="/login">login</a> -->
 
 
         <div class="row h-100">
@@ -23,6 +23,40 @@
                 <div class="row">
                     <div class="col ">
                         Senha
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="senha">
+                                    A 000
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="senha">
+                                    B 000
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="senha">
+                                    C 000
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="senha">
+                                    D <span id="test">000</span>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div class="col ">
@@ -38,8 +72,11 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        aaaaa
+                        slideshow
                     </div>
+                </div>
+                <div class="row">
+                    footer
                 </div>
             </div>
         </div>
@@ -57,10 +94,12 @@ const socket = io('http://localhost:3000');
 getTime();
 getDate();
 
-// TODO mostrar isto para cada fila
-// socket.on('users-in-fila', (numUsers) => {
-//     $('#fila-status').text(`Existe(m) ${numUsers} pessoa(s) na fila`);
-// });
+socket.emit('painel');
+
+socket.on('painel-senhas', (data) => {
+    console.log(data);
+});
+
 </script>
 
 </html>

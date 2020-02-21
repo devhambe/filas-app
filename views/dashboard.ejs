@@ -110,21 +110,12 @@
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
 <script src="https://kit.fontawesome.com/a747b443e5.js" crossorigin="anonymous"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
 const socket = io('http://localhost:3000');
-
-function populate(elements, array) {
-    for (i in elements) {
-        if(array[i] !== null) {
-            $(elements[i]).text(array[i]);
-        } else if(array[i] == undefined) {
-            $(elements[i]).text('...');
-        }
-    }
-}
 
 socket.emit('dashboard');
 
@@ -133,6 +124,7 @@ socket.on('dashboard-filas', (data) => {
     const next = ['#next-A', '#next-B', '#next-C', '#next-D'];
     populate(qtd, data.arrayUsers);
     populate(next, data.arraySenhas);
+
 });
 </script>
 

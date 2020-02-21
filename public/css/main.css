@@ -131,3 +131,9 @@ body {
 .relogio {
 	font-size: 22px;
 }
+
+.senha {
+	text-align: left;
+	background: #140a2c;
+	color: white;
+}

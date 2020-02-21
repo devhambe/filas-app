@@ -24,3 +24,13 @@ function getDate() {
 	const str = today.toLocaleDateString('pt-PT', options);
 	document.getElementById('data-atual').innerHTML = str.toUpperCase();
 }
+
+function populate(elements, array) {
+	for (i in elements) {
+		if (array[i] !== null) {
+			$(elements[i]).text(array[i]);
+		} else if (array[i] == undefined) {
+			$(elements[i]).text('...');
+		}
+	}
+}

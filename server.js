@@ -27,6 +27,18 @@ const filaA = { id: 0 };
 const filaB = { id: 0 };
 const filaC = { id: 0 };
 const filaD = { id: 0 };
+//TODO mudar objetos -> 1
+// num só
+const filas = {
+	filaA: { test: '123' },
+	filaB: { test: '321' }
+};
+
+const test = {
+	filas: [ 'test' ]
+};
+
+console.log(test.filas[0]);
 
 // Método para enviar o nº de users presentes na fila
 function updateUsersInFila(obj, fila) {
@@ -68,6 +80,21 @@ function updateDashboard() {
 	io.emit('dashboard-filas', { arrayUsers: arrayUsers, arraySenhas: arraySenhas });
 }
 
+function updatePainel() {
+	const objects = [ filaA, filaB, filaC, filaD ];
+	let arraySenhas = [];
+	for (obj in objects) {
+		const senha = Object.values(objects[obj]);
+		arraySenhas.push(senha[1]);
+	}
+	io.emit('painel-senhas', arraySenhas);
+}
+
+function update() {
+	updateDashboard();
+	updatePainel();
+}
+
 // Eventos Socket.IO
 
 // EVENTO onConnection
@@ -89,7 +116,7 @@ io.on('connection', (socket) => {
 					addToFila(socket, fila, filaD);
 					break;
 			}
-			updateDashboard();
+			update();
 		});
 	});
 
@@ -111,6 +138,10 @@ io.on('connection', (socket) => {
 		}
 	});
 
+	socket.on('painel', () => {
+		updatePainel();
+	});
+
 	socket.on('dashboard', () => {
 		updateDashboard();
 	});
@@ -121,7 +152,7 @@ io.on('connection', (socket) => {
 		for (obj in objects) {
 			removeFromFila(socket, objects[obj]);
 		}
-		updateDashboard();
+		update();
 	});
 });
 
