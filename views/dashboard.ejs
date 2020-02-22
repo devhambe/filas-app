@@ -122,10 +122,11 @@ socket.emit('dashboard');
 socket.on('dashboard-filas', (data) => {
     const qtd = ['#qtd-A', '#qtd-B', '#qtd-C', '#qtd-D'];
     const next = ['#next-A', '#next-B', '#next-C', '#next-D'];
-    populate(qtd, data.arrayUsers);
-    populate(next, data.arraySenhas);
-
+    populateUsers(qtd, data.users);
+    populateSenhas(next, data.senhas);
 });
+
+//TODO Botão CHAMAR
 </script>
 
 </html>

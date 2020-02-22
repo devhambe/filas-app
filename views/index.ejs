@@ -10,13 +10,11 @@
 </head>
 
 <body>
-    <!-- <h1 id=fila-status>Existem 0 pessoas na fila</h1> -->
 
     <div class="container-fluid h-100">
         <!-- temporario so pra navegação -->
         <!-- <a href="/senhas">senhas</a> -->
         <!-- <a href="/login">login</a> -->
-
 
         <div class="row h-100">
             <div class="col-md-5 div-senhas text-center">
@@ -27,7 +25,7 @@
                         <div class="row mt-5">
                             <div class="col">
                                 <div class="senha">
-                                    A 000
+                                    A <span id="senha-A">000</span>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +33,7 @@
                         <div class="row mt-5">
                             <div class="col">
                                 <div class="senha">
-                                    B 000
+                                    B <span id="senha-B">000</span>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +41,7 @@
                         <div class="row mt-5">
                             <div class="col">
                                 <div class="senha">
-                                    C 000
+                                    C <span id="senha-C">000</span>
                                 </div>
                             </div>
                         </div>
@@ -51,11 +49,10 @@
                         <div class="row mt-5">
                             <div class="col">
                                 <div class="senha">
-                                    D <span id="test">000</span>
+                                    D <span id="senha-D">000</span>
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
 
@@ -96,8 +93,9 @@ getDate();
 
 socket.emit('painel');
 
-socket.on('painel-senhas', (data) => {
-    console.log(data);
+socket.on('painel-senhas', (senhas) => {
+    const elements = ['#senha-A', '#senha-B', '#senha-C', '#senha-D'];
+    populatePainel(elements, senhas);
 });
 
 </script>

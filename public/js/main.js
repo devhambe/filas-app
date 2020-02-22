@@ -25,12 +25,35 @@ function getDate() {
 	document.getElementById('data-atual').innerHTML = str.toUpperCase();
 }
 
-function populate(elements, array) {
+function populateUsers(elements, users) {
 	for (i in elements) {
-		if (array[i] !== null) {
-			$(elements[i]).text(array[i]);
-		} else if (array[i] == undefined) {
-			$(elements[i]).text('...');
+		if (users[i] !== null) {
+			$(elements[i]).text(users[i]);
+		}
+	}
+}
+
+function populateSenhas(elements, senhas) {
+	for (i in elements) {
+		if (senhas[i][1] !== undefined) {
+			let senha = senhas[i][0] + senhas[i][1];
+			$(elements[i]).text(senha);
+		}
+	}
+}
+
+function populatePainel(elements, senhas) {
+	for (i in elements) {
+		if (senhas[i][1] !== undefined) {
+			let senha = senhas[i][1];
+
+			if (senha < 10) {
+				senha = '00' + senha;
+			} else if (senha >= 10) {
+				senha = '0' + senha;
+			}
+
+			$(elements[i]).text(senha);
 		}
 	}
 }

@@ -48,10 +48,10 @@ btnSenha.click(function() {
 });
 
 socket.on('users-in-fila', (numUsers) => {
-    $('#fila-status').text(`${numUsers} pessoa(s) à sua frente`);
+    $('#fila-status').text(`${numUsers} pessoa(s) na fila`);
 });
 
-socket.on('user-left', () => {
+socket.on('user-left', (fila) => {
     socket.emit('get-number-users', fila);
 });
 
