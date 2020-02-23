@@ -1,0 +1,45 @@
+<nav class="sidebar">
+    <div class="sidebar-heading">
+        <div class="">
+            <img src="img/logo.png" alt="Logótipo" class="img-fluid mr-3">
+            Painel de controlo
+        </div>
+        <div class="funcao mt-2"></div>
+    </div>
+    <ul class="nav nav-sidebar">
+        <li>
+            <a href="/dashboard">
+                <i class="fas fa-home mr-3"></i>
+                Início
+            </a>
+        </li>
+        <li class="sidebar-painel">
+            <a href="/painel">
+                <i class="fas fa-ticket-alt mr-3"></i>
+                Painel Senhas
+            </a>
+        </li>
+        <li class="sidebar-filas">
+            <a href="/filas">
+                <i class="fas fa-user-friends mr-3"></i>
+                Gestão de filas
+            </a>
+        </li>
+        <li class="sidebar-balcoes">
+            <a href="/balcoes">
+                <i class="fas fa-desktop mr-3"></i></i>
+                Gestão dos balcões
+            </a>
+        </li>
+        <li class="sidebar-register">
+            <a href="/register">
+                <i class="fas fa-user-plus mr-3"></i>
+                Registar utilizador
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-sidebar" id="sidebar-footer">
+        <li><%= nome %></li>
+        <li><a href="/logout">Logout<i class="fas fa-sign-out-alt ml-2"></i></a></li>
+    </ul>
+</nav>

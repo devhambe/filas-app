@@ -1,21 +1,33 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const mysql = require('mysql');
 const con = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
-	password: '',
-	database: 'filas_app'
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASS,
+	database: process.env.DB_DATABASE
 });
 
+function autenticar(req, res, page, nivel) {
+	if (req.session.loggedin) {
+		if (req.session.nivel == nivel || nivel == 0) {
+			res.render(page, { nome: req.session.nome, nivel: req.session.nivel });
+		} else {
+			res.redirect('/dashboard');
+		}
+	} else {
+		res.redirect('/login');
+	}
+}
+
 router.get('/', (req, res) => {
-	// res.render('login.ejs');
 	res.render('index.ejs');
 });
 
-router.get('/senhas', (req, res) => {
-	res.render('senhas.ejs');
+router.get('/painel', (req, res) => {
+	autenticar(req, res, 'painel.ejs', 1);
 });
 
 router.get('/login', (req, res) => {
@@ -23,15 +35,19 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/dashboard', (req, res) => {
-	if (req.session.loggedin) {
-		res.render('dashboard.ejs', { nome: req.session.nome });
-	} else {
-		res.redirect('/login');
-	}
+	autenticar(req, res, 'dashboard.ejs', 0);
+});
+
+router.get('/filas', (req, res) => {
+	autenticar(req, res, 'filas.ejs', 2);
 });
 
 router.get('/register', (req, res) => {
-	res.render('register.ejs');
+	autenticar(req, res, 'register.ejs', 1);
+});
+
+router.get('/balcoes', (req, res) => {
+	autenticar(req, res, 'balcoes.ejs', 1);
 });
 
 router.get('/logout', (req, res) => {
@@ -45,10 +61,10 @@ router.get('/logout', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-	const email = req.body.email;
+	const nome = req.body.nome;
 	const password = req.body.password;
-	async function checkUser(email, password) {
-		con.query('SELECT nome, password FROM users WHERE email = ?', [ email ], async function(err, result) {
+	async function checkUser(nome, password) {
+		con.query('SELECT nome, password, nivel FROM users WHERE nome = ?', [ nome ], async function(err, result) {
 			if (result.length > 0) {
 				const hashedPassword = result[0].password;
 
@@ -57,18 +73,19 @@ router.post('/login', (req, res) => {
 				if (match) {
 					req.session.loggedin = true;
 					req.session.nome = result[0].nome;
+					req.session.nivel = result[0].nivel;
 					res.redirect('/dashboard');
 				} else {
 					// TODO Msg de erro
 					res.redirect('/login');
 				}
 			} else {
-				// TODO email inválido - msg de erro
+				// TODO nome inválido - msg de erro
 				res.redirect('/login');
 			}
 		});
 	}
-	checkUser(email, password);
+	checkUser(nome, password);
 });
 
 router.post('/register', async (req, res) => {
@@ -76,21 +93,40 @@ router.post('/register', async (req, res) => {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
 		const sql =
-			'INSERT INTO users (nome, email, password) VALUES ("' +
+			'INSERT INTO users (nome, email, password, nivel) VALUES ("' +
 			req.body.nome +
 			'", "' +
 			req.body.email +
 			'", "' +
 			hashedPassword +
-			'")';
+			'", (select id from niveis where perm ="' +
+			req.body.nivel +
+			'"))';
 		con.query(sql, function(err, result) {
 			if (err) throw err;
 		});
 
-		res.redirect('/login');
+		res.redirect('/register');
 	} catch (err) {
 		res.redirect('/register');
 	}
+});
+
+router.post('/ajax/users/add', (req, res) => {
+	const sql = 'SELECT u.id, u.nome, u.email, n.perm from users u inner join niveis n on u.nivel = n.id';
+	con.query(sql, function(err, result) {
+		if (err) throw err;
+		result = JSON.stringify(result);
+		res.send(result);
+	});
+});
+
+router.post('/ajax/users/delete', (req, res) => {
+	const sql = 'DELETE FROM users where id =' + req.body.userId;
+	con.query(sql, function(err, result) {
+		if (err) throw err;
+		res.json({ success: 'Removido com sucesso', status: 200 });
+	});
 });
 
 module.exports = router;

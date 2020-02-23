@@ -1,4 +1,3 @@
-//npm run devStart
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -23,6 +22,7 @@ app.use(
 
 app.use('/', routes);
 
+// Objeto com todas as filas
 const filas = {
 	fila: [ { id: 'A' }, { id: 'B' }, { id: 'C' }, { id: 'D' } ]
 };

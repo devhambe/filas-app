@@ -3,28 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>
+    <link rel="icon" href="favicon.ico">
     <title>Document</title>
 </head>
 <body>
-    <form action="/register" method="POST">
-        <div>
-            <label for="nome">Nome</label>
-            <input type="text" name="nome" id="nome" required>
+    <div class="d-flex wrapper">
+
+        <%- include ('includes/sidebar') %>
+
+        <div class="container-fluid">
+            <div class="content">
+                <form action="/register" method="POST">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-at"></i>
+                                    </div>
+                                </div>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                </div>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="nivel"><i class="fas fa-user-shield"></i></label>
+                                </div>
+                                <select class="custom-select" name="nivel" id="nivel" required>
+                                    <option disabled selected>Nível de permissões</option>
+                                    <option value="Admin">Administrador</option>
+                                    <option value="Operador">Operador</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-custom">Registar</button>
+                </form>
+
+                <div class="row mt-5">
+                    <div class="col">
+                        <table class="table" id="table-users">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Nível</th>
+                                    <th>Remover</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required>
-        </div>
-
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
-        </div>
-
-        <button type="submit">Registar</button>
-
-    </form>
-    <a href="/login">Login</a>
+    </div>
 </body>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="https://kit.fontawesome.com/a747b443e5.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
+
+<script>
+    mostrarFuncao('<%= nivel %>');
+
+    let columns = [
+        {'data' : 'nome'},
+        {'data' : 'email'},
+        {'data' : 'perm'},
+        {
+            'data' : 'id',
+            render: function(data, type, row) {
+                return "<a href='#' class='user-delete' data-id=" + data + "> <i class='fas fa-trash-alt'></i> </a>";
+            }
+        }
+    ];
+
+    $('#table-users').DataTable({
+        'processing': true,
+        'serverSide': false,
+        'ajax': {
+            'url': "/ajax/users/add",
+            'type': "POST",
+            'dataSrc': ""
+        },
+        'columns': columns,
+        'responsive': true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese.json"
+        },
+        "autoWidth": false
+    });
+
+    $(document).on('click', '.user-delete', function() {
+        const userId = $(this).data('id');
+        const row = $(this).closest("tr");
+        $.ajax({
+            type: "POST",
+            url: "ajax/users/delete",
+            data: {userId: userId},
+            success: function(data) {
+                row.closest("tr").fadeOut(400, function() {
+                    $(this).remove();
+                });
+            }
+        });
+    });
+</script>
+
 </html>

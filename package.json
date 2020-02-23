@@ -4,16 +4,16 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"devStart": "nodemon server.js"
+		"devstart": "nodemon server.js"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"bcrypt": "^3.0.8",
 		"bootstrap": "^4.4.1",
+		"dotenv": "^8.2.0",
 		"ejs": "^3.0.1",
 		"express": "^4.17.1",
-		"express-flash": "0.0.2",
 		"express-session": "^1.17.0",
 		"jquery": "^3.4.1",
 		"mysql": "^2.18.1",

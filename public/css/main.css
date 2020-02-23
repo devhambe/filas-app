@@ -18,12 +18,6 @@ body {
 	margin: auto;
 }
 
-.form-login input[type="email"] {
-	margin-bottom: -1px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-}
-
 .form-login .form-control {
 	position: relative;
 	box-sizing: border-box;
@@ -47,27 +41,47 @@ body {
 .sidebar {
 	min-height: 100vh;
 	margin-left: 0;
-	background: #140a2c;
+	background: #121212;
+	width: 16rem;
 }
 
 .sidebar .sidebar-heading {
 	padding: 0.875rem 1.25rem;
-	font-size: 1.2rem;
+	font-size: 1.1rem;
 	color: white;
 }
 
-.sidebar .list-group {
+.sidebar .sidebar-heading img {
+	width: 48px;
+	height: 48px;
+}
+
+.sidebar ul {
+	color: white;
+}
+
+.sidebar li a {
+	text-decoration: none;
+	color: inherit;
+	padding: 10px;
 	width: 16rem;
+	display: block;
+	font-size: 1.1em;
 }
 
-.sidebar .list-group-item {
-	background: #140a2c;
-	color: white;
+.sidebar li a:hover {
+	background: white;
+	color: #140a2c;
+}
+
+#sidebar-footer {
+	position: absolute;
+	display: inline-block;
+	bottom: 0;
 }
 
 .content {
-	min-width: 100vw;
-	padding: 70px;
+	padding: 40px;
 }
 
 .container-fluid {
@@ -79,7 +93,7 @@ body {
 	border-left: 5px solid forestgreen;
 	width: 75vw;
 	margin: 0 20px;
-	margin-bottom: 35px;
+	margin-bottom: 50px;
 	box-shadow: 10px 10px 0px -3px rgba(230, 227, 230, 1);
 }
 
@@ -136,4 +150,13 @@ body {
 	text-align: left;
 	background: #140a2c;
 	color: white;
+}
+
+.btn-custom {
+	background: #140a2c;
+	color: white;
+}
+
+.fa-trash-alt {
+	color: red;
 }

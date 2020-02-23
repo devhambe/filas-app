@@ -38,6 +38,8 @@ function populateSenhas(elements, senhas) {
 		if (senhas[i][1] !== undefined) {
 			let senha = senhas[i][0] + senhas[i][1];
 			$(elements[i]).text(senha);
+		} else {
+			$(elements[i]).text('...');
 		}
 	}
 }
@@ -56,4 +58,16 @@ function populatePainel(elements, senhas) {
 			$(elements[i]).text(senha);
 		}
 	}
+}
+
+function mostrarFuncao(nivel) {
+	let funcao;
+	if (nivel == 1) {
+		funcao = 'Administrador';
+		$('.sidebar-filas').hide();
+	} else if (nivel == 2) {
+		funcao = 'Operador';
+		$('.sidebar-painel, .sidebar-register, .sidebar-balcoes').hide();
+	}
+	$('.funcao').text(funcao);
 }

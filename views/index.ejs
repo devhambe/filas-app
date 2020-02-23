@@ -6,96 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
-    <title>Lista de espera</title>
+    <link rel="icon" href="favicon.ico">
+    <title>Senhas</title>
 </head>
 
 <body>
+    <div class="container-fluid">
+        <h1 id=fila-status></h1>
+        <div class="div-buttons">
+            <button class="btn btn-primary btn-senha" value='A'>
+                A - Coisa 1
+            </button>
 
-    <div class="container-fluid h-100">
-        <!-- temporario so pra navegação -->
-        <!-- <a href="/senhas">senhas</a> -->
-        <!-- <a href="/login">login</a> -->
+            <button class="btn btn-primary btn-senha" value='B'>
+                B - Coisa 2
+            </button>
 
-        <div class="row h-100">
-            <div class="col-md-5 div-senhas text-center">
-                <div class="row">
-                    <div class="col ">
-                        Senha
+            <button class="btn btn-primary btn-senha" value='C'>
+                C - Coisa 3
+            </button>
 
-                        <div class="row mt-5">
-                            <div class="col">
-                                <div class="senha">
-                                    A <span id="senha-A">000</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-5">
-                            <div class="col">
-                                <div class="senha">
-                                    B <span id="senha-B">000</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-5">
-                            <div class="col">
-                                <div class="senha">
-                                    C <span id="senha-C">000</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-5">
-                            <div class="col">
-                                <div class="senha">
-                                    D <span id="senha-D">000</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="col ">
-                        Balcão
-                    </div>
-                </div>
-            </div>
-
-            <div class=" col-md-7 div-slideshow">
-                <div class="row p-3 text-center">
-                    <div id='data-atual' class="col relogio"></div>
-                    <div id='tempo-atual' class="col relogio"></div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        slideshow
-                    </div>
-                </div>
-                <div class="row">
-                    footer
-                </div>
-            </div>
+            <button class="btn btn-primary btn-senha" value='D'>
+                D - Coisa 4
+            </button>
         </div>
     </div>
 </body>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
-<script src="/js/main.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
 const socket = io('http://localhost:3000');
+let fila;
+const btnSenha = $('.btn-senha');
 
-getTime();
-getDate();
+btnSenha.click(function() {
+    $('.div-buttons').hide();
+    fila = $(this).val();
+    socket.emit('new-user', fila);
+});
 
-socket.emit('painel');
+socket.on('users-in-fila', (numUsers) => {
+    $('#fila-status').text(`${numUsers} pessoa(s) na fila`);
+});
 
-socket.on('painel-senhas', (senhas) => {
-    const elements = ['#senha-A', '#senha-B', '#senha-C', '#senha-D'];
-    populatePainel(elements, senhas);
+socket.on('user-left', (fila) => {
+    socket.emit('get-number-users', fila);
 });
 
 </script>
