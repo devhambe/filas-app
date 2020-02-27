@@ -15,10 +15,116 @@
 
         <div class="container-fluid">
             <div class="content">
-                TODO Gestão dos balcões
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Balcão Nº
+                                </th>
+                                <th>
+                                    Operador
+                                </th>
+                                <th>
+                                    Estado
+                                </th>
+                                <th class="text-center" colspan="2">
+                                    Ações
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-balcoes-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Modal -->
+                <div class="modal fade" tabindex="-1" id="add-modal">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <form id="add-form" class="form">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Adicionar balcão</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-row">
+                                        <div class="col-2">
+                                            <label for="numero">Nº do balcão</label>
+                                            <input type="text" class="form-control" name="numero" required>
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="operador">Operador</label>
+                                            <select class="custom-select" name="operador" required>
+
+                                            </select>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" name="estado" id="estado">
+                                                <label class="custom-control-label" for="estado">
+                                                    Em uso ?
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <button type="submit" class="btn btn-success">Adicionar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" tabindex="-1" id="edit-modal">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <form id="edit-form" class="form">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Editar balcão</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-row">
+                                        <div class="col-2">
+                                            <label for="numero">Nº do balcão</label>
+                                            <input type="text" class="form-control" name="numero" id="edit-numero" required>
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="operador">Operador</label>
+                                            <select class="custom-select" name="operador" id="edit-operador" required>
+
+                                            </select>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" name="estado" id="edit-estado">
+                                                <label class="custom-control-label" for="edit-estado">
+                                                    Em uso ?
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" class="balcao-id" name="id" value="">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <button type="submit" class="btn btn-success">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
 </body>
 
@@ -29,7 +135,133 @@
 
 <script>
 
-mostrarFuncao('<%= nivel %>');
+mostrarFuncao('<%= nivel %>', '<%= id %>');
+
+$.ajax({
+    type: "POST",
+    url: "/ajax/balcoes",
+    success: function(res) {
+        res = JSON.parse(res);
+        for (let i = 0; i < res.length; i++) {
+            $('#table-balcoes-body').prepend(
+                '<tr>' +
+                    '<td>' +
+                        `Balcão ${res[i].numero}` +
+                    '</td>' +
+                    '<td>' +
+                        `${res[i].nome}` +
+                    '</td>' +
+                    '<td>' +
+                        (res[i].estado ? "<i class='fas fa-circle on'></i>" : "<i class='fas fa-circle off'></i>") +
+                    '</td>' +
+                    '<td class="text-center">' +
+                        `<a href="#" data-id="${res[i].id}" class="balcao-edit" data-toggle="modal" data-target="#edit-modal"><i class="fas fa-edit"></i></a>` +
+                    '</td>' +
+                    '<td class="text-center">' +
+                        `<a href="#" data-id="${res[i].id}" class="balcao-delete"><i class="fas fa-trash-alt"></i></a>` +
+                    '</td>' +
+                '</tr>'
+            );
+        }
+
+        $('#table-balcoes-body').append(
+            '<tr>'+
+                '<td colspan="5">'+
+                    '<a href="" class="balcao-add" data-toggle="modal" data-target="#add-modal">'+
+                        '<i class="fas fa-plus mr-2"></i> Adicionar um novo balcão'+
+                    '</a>'+
+                '</td>'+
+            '</tr>'
+        )
+    }
+});
+
+$(document).on('click', '.balcao-delete', function() {
+    const balcaoId = $(this).data('id');
+    const row = $(this).closest("tr");
+    $.ajax({
+        type: "POST",
+        url: "ajax/balcoes/delete",
+        data: {balcaoId: balcaoId},
+        success: function(res) {
+            row.closest("tr").fadeOut(400, function() {
+                $(this).remove();
+            });
+        }
+    });
+});
+
+$(document).on('click', '.balcao-edit', function() {
+    const balcaoId = $(this).data('id');
+    $('.balcao-id').val(balcaoId);
+    $.ajax({
+        type: "POST",
+        url: "ajax/balcoes/edit",
+        data: {balcaoId: balcaoId},
+        success: function(res) {
+            res = JSON.parse(res);
+            $('#edit-numero').val(res[0].numero);
+            res[0].estado ? $('#edit-estado').prop('checked', true) : $('#edit-estado').prop('checked', false);
+            const operador = res[0].operador;
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/operadores",
+                data: {operador: operador},
+                success: function(res) {
+                    $('select[name="operador"]').empty();
+                    res = JSON.parse(res);
+                    for (let i = 0; i < res.length; i++) {
+                        $('select[name="operador"]').append('<option value="' + res[i].id + '">' + res[i].nome + '</option>');
+                    }
+                    $('#edit-operador').val(operador);
+                }
+            });
+        }
+    });
+});
+
+$('#edit-form').submit(function (e) {
+    e.preventDefault();
+    const form = $(this);
+    $.ajax({
+        type: "POST",
+        url: "/ajax/balcoes/update",
+        data: form.serializeArray(),
+        success:function(res) {
+            $("#edit-modal").modal("hide");
+            location.reload();
+        }
+    });
+});
+
+$(document).on('click', '.balcao-add', function() {
+    $.ajax({
+        type: "POST",
+        url: "ajax/operadores",
+        success: function(res) {
+            $('select[name="operador"]').empty();
+            res = JSON.parse(res);
+            for (let i = 0; i < res.length; i++) {
+                $('select[name="operador"]').append('<option value="' + res[i].id + '">' + res[i].nome + '</option>');
+            }
+        }
+    });
+});
+
+$(document).on('submit', '#add-form', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    $.ajax({
+        type: "POST",
+        url: "/ajax/balcoes/add",
+        data: form.serializeArray(),
+        success:function(res) {
+            $("#add-modal").modal("hide");
+            location.reload();
+        }
+    });
+});
 
 </script>
 

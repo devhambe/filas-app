@@ -7,22 +7,16 @@
         <div class="funcao mt-2"></div>
     </div>
     <ul class="nav nav-sidebar">
-        <li>
+        <li class="sidebar-filas">
             <a href="/dashboard">
-                <i class="fas fa-home mr-3"></i>
-                Início
+                <i class="fas fa-user-friends mr-3"></i>
+                Gestão de filas
             </a>
         </li>
         <li class="sidebar-painel">
             <a href="/painel">
                 <i class="fas fa-ticket-alt mr-3"></i>
                 Painel Senhas
-            </a>
-        </li>
-        <li class="sidebar-filas">
-            <a href="/filas">
-                <i class="fas fa-user-friends mr-3"></i>
-                Gestão de filas
             </a>
         </li>
         <li class="sidebar-balcoes">
@@ -40,6 +34,7 @@
     </ul>
     <ul class="nav nav-sidebar" id="sidebar-footer">
         <li><%= nome %></li>
+        <li class="balcao-atual"></li>
         <li><a href="/logout">Logout<i class="fas fa-sign-out-alt ml-2"></i></a></li>
     </ul>
 </nav>

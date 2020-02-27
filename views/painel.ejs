@@ -13,9 +13,6 @@
 <body>
 
     <div class="container-fluid h-100">
-        <!-- temporario so pra navegação -->
-        <!-- <a href="/senhas">senhas</a> -->
-        <!-- <a href="/login">login</a> -->
 
         <div class="row h-100">
             <div class="col-md-5 div-senhas text-center">
@@ -59,6 +56,39 @@
 
                     <div class="col ">
                         Balcão
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="balcao">
+                                    <span id="balcao-A">---</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="balcao">
+                                    <span id="balcao-B">---</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="balcao">
+                                    <span id="balcao-C">---</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col">
+                                <div class="balcao">
+                                    <span id="balcao-D">---</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -94,9 +124,9 @@ getDate();
 
 socket.emit('painel');
 
-socket.on('painel-senhas', (senhas) => {
-    const elements = ['#senha-A', '#senha-B', '#senha-C', '#senha-D'];
-    populatePainel(elements, senhas);
+socket.on('painel-senhas', (fila, senha, balcao) => {
+    populatePainel(fila, senha, balcao);
+
 });
 
 </script>

@@ -100,7 +100,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
 
 <script>
-    mostrarFuncao('<%= nivel %>');
+    mostrarFuncao('<%= nivel %>', '<%= id %>');
 
     let columns = [
         {'data' : 'nome'},
@@ -111,6 +111,7 @@
             render: function(data, type, row) {
                 return "<a href='#' class='user-delete' data-id=" + data + "> <i class='fas fa-trash-alt'></i> </a>";
             }
+            //TODO Editar users
         }
     ];
 
@@ -118,7 +119,7 @@
         'processing': true,
         'serverSide': false,
         'ajax': {
-            'url': "/ajax/users/add",
+            'url': "/ajax/users",
             'type': "POST",
             'dataSrc': ""
         },

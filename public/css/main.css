@@ -60,6 +60,13 @@ body {
 	color: white;
 }
 
+.sidebar li {
+	padding: 5px;
+	width: 16rem;
+	display: block;
+	font-size: 1em;
+}
+
 .sidebar li a {
 	text-decoration: none;
 	color: inherit;
@@ -158,5 +165,13 @@ body {
 }
 
 .fa-trash-alt {
+	color: red;
+}
+
+.fa-circle.on {
+	color: green;
+}
+
+.fa-circle.off {
 	color: red;
 }

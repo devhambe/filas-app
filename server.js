@@ -6,6 +6,8 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const session = require('express-session');
 
+//TODO localhost?
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
@@ -24,7 +26,8 @@ app.use('/', routes);
 
 // Objeto com todas as filas
 const filas = {
-	fila: [ { id: 'A' }, { id: 'B' }, { id: 'C' }, { id: 'D' } ]
+	fila: [ { id: 'A' }, { id: 'B' }, { id: 'C' }, { id: 'D' } ],
+	senha: [ { cont: 1 }, { cont: 1 }, { cont: 1 }, { cont: 1 } ]
 };
 
 // Método para adicionar um novo user à fila
@@ -36,8 +39,9 @@ function addToFila(socket, filaAtual) {
 		.indexOf(filaAtual);
 
 	const num = Object.keys(filas.fila[index]).length;
-	filas.fila[index][socket.id] = num;
-
+	const senha = filas.senha[index].cont++;
+	filas.fila[index][socket.id] = senha;
+	console.log(filas);
 	io.to(filaAtual).emit('users-in-fila', num);
 }
 
@@ -49,6 +53,20 @@ function removeFromFila(socket) {
 			const fila = filas.fila[i].id;
 			io.emit('user-left', fila);
 			socket.disconnect();
+		}
+	}
+}
+
+function atenderSenha() {
+	for (let i = 0; i < filas.fila.length; i++) {
+		const senhaId = Object.keys(filas.fila[i])[1];
+		if (filas.fila[i][senhaId]) {
+			delete filas.fila[i][senhaId];
+			const fila = filas.fila[i].id;
+			io.emit('user-left', fila);
+			if (io.sockets.connected[senhaId]) {
+				io.sockets.connected[senhaId].disconnect();
+			}
 		}
 	}
 }
@@ -79,17 +97,15 @@ function updateDashboard() {
 
 // Método para fazer update à senha seguinte
 // no Painel
-function updatePainel() {
-	let senhas = [];
-	for (let i = 0; i < filas.fila.length; i++) {
-		senhas.push(Object.values(filas.fila[i]));
-	}
-	io.emit('painel-senhas', senhas);
-}
+function updatePainel(filaAtual, balcao) {
+	let index = filas.fila
+		.map(function(a) {
+			return a.id;
+		})
+		.indexOf(filaAtual);
 
-function update() {
-	updateDashboard();
-	updatePainel();
+	let senha = Object.values(filas.fila[index])[1];
+	io.emit('painel-senhas', filaAtual, senha, balcao);
 }
 
 // Eventos Socket.IO ================================================
@@ -100,7 +116,7 @@ io.on('connection', (socket) => {
 	socket.on('new-user', (fila) => {
 		socket.join(fila, () => {
 			addToFila(socket, fila);
-			update();
+			updateDashboard();
 		});
 	});
 
@@ -110,20 +126,32 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('painel', () => {
-		updatePainel();
+		// updatePainel();
 	});
 
 	socket.on('dashboard', () => {
 		updateDashboard();
 	});
 
+	socket.on('chamar-senha', (fila, balcao) => {
+		updatePainel(fila, balcao);
+		io.to(fila).emit('balcao', balcao);
+	});
+
+	socket.on('senha-atendida', () => {
+		atenderSenha();
+		updateDashboard();
+	});
+
 	// EVENTO onDisconnect
 	socket.on('disconnect', () => {
 		removeFromFila(socket);
-		update();
+		updateDashboard();
 	});
 });
 
 server.listen(3000, function() {
 	console.log(new Date() + '\nServer a correr na porta 3000');
 });
+
+//TODO TTS?

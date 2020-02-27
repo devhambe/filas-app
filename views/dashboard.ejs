@@ -15,7 +15,106 @@
 
         <div class="container-fluid">
             <div class="content">
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        A
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        temptemptemp
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-A">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        <span class="next-A">...</span>
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal" data-backdrop="static" data-keyboard="false" data-fila="A">CHAMAR</button>
+                    </div>
+                </div>
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        B
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        temptemptemp
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-B">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        <span class="next-B">...</span>
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal" data-backdrop="static" data-keyboard="false" data-fila="B">CHAMAR</button>
+                    </div>
+                </div>
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        C
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        temptemptemp
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-C">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        <span class="next-C">...</span>
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal" data-backdrop="static" data-keyboard="false" data-fila="C">CHAMAR</button>
+                    </div>
+                </div>
+                <div class="fila row">
+                    <div class="fila-header col-1">
+                        D
+                    </div>
+                    <div class="fila-desc col-2">
+                        Fila de espera <br>
+                        temptemptemp
+                    </div>
+                    <div class="fila-espera col-2">
+                        <p>Em espera</p>
+                        <i class="fas fa-users"></i> <span id="qtd-D">0</span>
+                    </div>
+                    <div class="fila-next col-5">
+                        <p>Próxima senha</p>
+                        <span class="next-D">...</span>
+                    </div>
+                    <div class="fila-call col-1">
+                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal" data-backdrop="static" data-keyboard="false" data-fila="D">CHAMAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Modal Senha -->
+        <div class="modal fade" id="senha-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Senha ---</h5>
+                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span> -->
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- TODO Dados do cliente ??? -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="atender-senha">Marcar como atendido</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -31,7 +130,40 @@
 <script>
 const socket = io('http://localhost:3000');
 
-mostrarFuncao('<%= nivel %>');
+socket.emit('dashboard');
+
+let senhas;
+socket.on('dashboard-filas', (data) => {
+    const qtd = ['#qtd-A', '#qtd-B', '#qtd-C', '#qtd-D'];
+    const next = ['.next-A', '.next-B', '.next-C', '.next-D'];
+    populateUsers(qtd, data.users);
+    populateSenhas(next, data.senhas);
+    senhas = data.senhas;
+});
+
+$('#senha-modal').on('show.bs.modal', function(e) {
+    socket.emit('dashboard');
+    const button = $(e.relatedTarget);
+    const fila = button.data('fila');
+    const modal = $(this);
+    modal.find('.modal-title').attr('class', `modal-title next-${fila}`);
+});
+
+// Ao carregar no botão de chamar
+$('.btn-chamar').click(function() {
+    const fila = $(this).data('fila');
+    const balcao = $('.balcao-atual').data('id');
+    socket.emit('chamar-senha', fila, balcao);
+});
+
+// Ao marcar o cliente como 'atendido'
+$('#atender-senha').click(function() {
+    socket.emit('senha-atendida');
+});
+
+mostrarFuncao('<%= nivel %>', '<%= id %>');
+
+// TODO tempo de espera
 
 </script>
 
