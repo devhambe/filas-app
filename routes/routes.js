@@ -56,8 +56,6 @@ router.get('/logout', (req, res) => {
 	res.redirect('/login');
 });
 
-//TODO Prepared statements
-
 router.post('/login', (req, res) => {
 	const nome = req.body.nome;
 	const password = req.body.password;
@@ -75,11 +73,9 @@ router.post('/login', (req, res) => {
 					req.session.nivel = result[0].nivel;
 					res.redirect('/dashboard');
 				} else {
-					// TODO Msg de erro
 					res.redirect('/login');
 				}
 			} else {
-				// TODO nome inválido - msg de erro
 				res.redirect('/login');
 			}
 		});
@@ -91,9 +87,9 @@ router.post('/register', async (req, res) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-		const sql = `INSERT INTO users (nome, email, password, nivel) VALUES ("${req.body.nome}", "${req.body
-			.email}", "${hashedPassword}", (SELECT id FROM niveis WHERE perm = "${req.body.nivel}"))`;
-		con.query(sql, function(err, result) {
+		const sql =
+			'INSERT INTO users (nome, email, password, nivel) VALUES (?, ?, ?, (SELECT id FROM niveis WHERE perm = ?))';
+		con.query(sql, [ req.body.nome, req.body.email, hashedPassword, req.body.nivel ], function(err, result) {
 			if (err) throw err;
 		});
 
@@ -118,8 +114,8 @@ router.post('/ajax/users', (req, res) => {
 
 router.post('/ajax/users/delete', (req, res) => {
 	try {
-		const sql = 'DELETE FROM users where id =' + req.body.userId;
-		con.query(sql, function(err, result) {
+		const sql = 'DELETE FROM users WHERE id = ?';
+		con.query(sql, [ req.body.userId ], function(err, result) {
 			if (err) throw err;
 			res.json({ success: 'Removido com sucesso', status: 200 });
 		});
@@ -131,7 +127,8 @@ router.post('/ajax/users/delete', (req, res) => {
 // Request que retorna todos os balcões existentes para serem apresentados na tabela
 router.post('/ajax/balcoes', (req, res) => {
 	try {
-		const sql = 'SELECT b.id, b.numero, b.estado, u.nome from balcoes b inner join users u on b.operador = u.id';
+		const sql =
+			'SELECT b.id, b.numero, b.estado, u.nome from balcoes b inner join users u on b.operador = u.id ORDER BY b.numero DESC';
 		con.query(sql, function(err, result) {
 			if (err) throw err;
 			result = JSON.stringify(result);
@@ -145,8 +142,8 @@ router.post('/ajax/balcoes', (req, res) => {
 // Request que retorna o balcão atual do operador ( se estiver em uso )
 router.post('/ajax/balcao', (req, res) => {
 	try {
-		const sql = `SELECT id, numero from balcoes where estado = 1 and operador = ${req.body.id}`;
-		con.query(sql, function(err, result) {
+		const sql = 'SELECT id, numero from balcoes where estado = 1 and operador = ?';
+		con.query(sql, [ req.body.id ], function(err, result) {
 			if (err) throw err;
 			result = JSON.stringify(result);
 			res.send(result);
@@ -164,9 +161,8 @@ router.post('/ajax/balcoes/add', (req, res) => {
 		} else {
 			req.body.estado = 1;
 		}
-		const sql = `INSERT INTO balcoes (numero, estado, operador) VALUES ("${req.body.numero}", "${req.body
-			.estado}", "${req.body.operador}") `;
-		con.query(sql, function(err, result) {
+		const sql = `INSERT INTO balcoes (numero, estado, operador) VALUES (?, ?, ?) `;
+		con.query(sql, [ req.body.numero, req.body.estado, req.body.operador ], function(err, result) {
 			if (err) throw err;
 			result = JSON.stringify(result);
 			res.send(result);
@@ -182,9 +178,8 @@ router.post('/ajax/balcoes/update', (req, res) => {
 		} else {
 			req.body.estado = 1;
 		}
-		const sql = `UPDATE balcoes SET numero = ${req.body.numero}, operador = ${req.body.operador}, estado = ${req
-			.body.estado} where id = ${req.body.id}`;
-		con.query(sql, function(err, result) {
+		const sql = 'UPDATE balcoes SET numero = ?, operador = ?, estado = ? where id = ?';
+		con.query(sql, [ req.body.numero, req.body.operador, req.body.estado, req.body.id ], function(err, result) {
 			if (err) throw err;
 			res.json({ success: 'Atualizado com sucesso', status: 200 });
 		});
@@ -196,8 +191,8 @@ router.post('/ajax/balcoes/update', (req, res) => {
 // Request para remover um balcão
 router.post('/ajax/balcoes/delete', (req, res) => {
 	try {
-		const sql = 'DELETE FROM balcoes where id =' + req.body.balcaoId;
-		con.query(sql, function(err, result) {
+		const sql = 'DELETE FROM balcoes where id = ?';
+		con.query(sql, [ req.body.balcaoId ], function(err, result) {
 			if (err) throw err;
 			res.json({ success: 'Removido com sucesso', status: 200 });
 		});
@@ -209,8 +204,8 @@ router.post('/ajax/balcoes/delete', (req, res) => {
 // Request que retorna os dados de um determinado balcão para a sua edição
 router.post('/ajax/balcoes/edit', (req, res) => {
 	try {
-		const sql = 'SELECT * FROM balcoes where id =' + req.body.balcaoId;
-		con.query(sql, function(err, result) {
+		const sql = 'SELECT * FROM balcoes where id = ?';
+		con.query(sql, [ req.body.balcaoId ], function(err, result) {
 			if (err) throw err;
 			result = JSON.stringify(result);
 			res.send(result);
