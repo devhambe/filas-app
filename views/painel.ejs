@@ -94,17 +94,22 @@
             </div>
 
             <div class=" col-md-7 div-slideshow">
-                <div class="row p-3 text-center">
+                <div class="row p-3 text-right">
                     <div id='data-atual' class="col relogio"></div>
                     <div id='tempo-atual' class="col relogio"></div>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        slideshow
+                    <div id="slideshow">
+                        <div>
+                            aaaaaaaaaaaaaaaa
+                        </div>
+                        <div>
+                            eeeeeeeeeeeeeeee
+                        </div>
+                        <div>
+                            uuuuuuuuuuuuuuuu
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    footer
                 </div>
             </div>
         </div>
@@ -127,6 +132,19 @@ socket.emit('painel');
 socket.on('painel-senhas', (fila, senha, balcao) => {
     populatePainel(fila, senha, balcao);
 
+});
+
+$(document).ready(function() {
+    $("#slideshow > div:gt(0)").hide();
+
+    setInterval(function() {
+    $('#slideshow > div:first')
+        .fadeOut(1000)
+        .next()
+        .fadeIn(1000)
+        .end()
+        .appendTo('#slideshow');
+    },  3000);
 });
 
 </script>

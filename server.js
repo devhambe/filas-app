@@ -41,7 +41,6 @@ function addToFila(socket, filaAtual) {
 	const num = Object.keys(filas.fila[index]).length;
 	const senha = filas.senha[index].cont++;
 	filas.fila[index][socket.id] = senha;
-	console.log(filas);
 	io.to(filaAtual).emit('users-in-fila', num);
 }
 
@@ -57,6 +56,7 @@ function removeFromFila(socket) {
 	}
 }
 
+// Método para atender a senha do cliente (e removê-lo da fila)
 function atenderSenha() {
 	for (let i = 0; i < filas.fila.length; i++) {
 		const senhaId = Object.keys(filas.fila[i])[1];
@@ -126,21 +126,26 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('painel', () => {
-		// updatePainel();
+		// TODO Dados no painel, ao painel entrar??
+		//updatePainel();
 	});
 
+	// EVENTO
 	socket.on('dashboard', () => {
 		updateDashboard();
 	});
 
+	// EVENTO
 	socket.on('chamar-senha', (fila, balcao) => {
 		updatePainel(fila, balcao);
 		io.to(fila).emit('balcao', balcao);
 	});
 
+	// EVENTO
 	socket.on('senha-atendida', () => {
 		atenderSenha();
 		updateDashboard();
+		io.emit('painel-senhas', 'A', '000', '---');
 	});
 
 	// EVENTO onDisconnect

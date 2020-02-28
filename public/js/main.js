@@ -53,7 +53,6 @@ function populatePainel(fila, senha, balcao) {
 	} else if (senha >= 10) {
 		senha = '0' + senha;
 	}
-	console.log(senha);
 	$(`#senha-${fila}`).text(senha);
 	$(`#balcao-${fila}`).text(balcao);
 }

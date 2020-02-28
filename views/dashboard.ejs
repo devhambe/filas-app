@@ -104,8 +104,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Senha ---</h5>
-                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span> -->
                         </button>
                     </div>
                     <div class="modal-body">
@@ -132,13 +130,11 @@ const socket = io('http://localhost:3000');
 
 socket.emit('dashboard');
 
-let senhas;
 socket.on('dashboard-filas', (data) => {
     const qtd = ['#qtd-A', '#qtd-B', '#qtd-C', '#qtd-D'];
     const next = ['.next-A', '.next-B', '.next-C', '.next-D'];
     populateUsers(qtd, data.users);
     populateSenhas(next, data.senhas);
-    senhas = data.senhas;
 });
 
 $('#senha-modal').on('show.bs.modal', function(e) {
@@ -159,6 +155,7 @@ $('.btn-chamar').click(function() {
 // Ao marcar o cliente como 'atendido'
 $('#atender-senha').click(function() {
     socket.emit('senha-atendida');
+    //TODO enviar fila
 });
 
 mostrarFuncao('<%= nivel %>', '<%= id %>');

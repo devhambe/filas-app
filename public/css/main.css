@@ -147,6 +147,7 @@ body {
 .div-slideshow {
 	background: #140a2c;
 	color: white;
+	max-height: 100%;
 }
 
 .relogio {
@@ -174,4 +175,23 @@ body {
 
 .fa-circle.off {
 	color: red;
+}
+
+#slideshow {
+	margin: auto;
+	margin-top: 20px;
+	position: relative;
+	width: 800px;
+	height: 600px;
+	padding: 10px;
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+	/* box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.4); */
+}
+
+#slideshow > div {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	bottom: 10px;
 }

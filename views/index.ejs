@@ -65,6 +65,10 @@ socket.on('balcao', (balcao) => {
     $('#fila-status').text(`É a sua vez! Diriga-se ao balcão ${balcao}`);
 });
 
+socket.on('disconnect', () => {
+    location.reload();
+});
+
 </script>
 
 </html>
