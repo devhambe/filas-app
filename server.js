@@ -1,33 +1,42 @@
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 const app = express();
-const routes = require('./routes/routes');
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-const session = require('express-session');
+const session = require("express-session");
+const routes = require("./routes/routes");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
-//TODO localhost?
+// TODO localhost?
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
-app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
-app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
-app.set('view-engine', 'ejs');
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+	"/js",
+	express.static(path.join(__dirname, "/node_modules/jquery/dist"))
+);
+app.use(
+	"/js",
+	express.static(path.join(__dirname, "/node_modules/bootstrap/dist/js"))
+);
+app.use(
+	"/css",
+	express.static(path.join(__dirname, "/node_modules/bootstrap/dist/css"))
+);
+app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(
 	session({
-		secret: 'jeff johnson',
+		secret: "jeff johnson",
 		resave: false,
 		saveUninitialized: false
 	})
 );
 
-app.use('/', routes);
+app.use("/", routes);
 
 // Objeto com todas as filas
 const filas = {
-	fila: [ { id: 'A' }, { id: 'B' }, { id: 'C' }, { id: 'D' } ],
-	senha: [ { cont: 1 }, { cont: 1 }, { cont: 1 }, { cont: 1 } ]
+	fila: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
+	senha: [{ cont: 1 }, { cont: 1 }, { cont: 1 }, { cont: 1 }]
 };
 
 // Método para adicionar um novo user à fila
@@ -41,7 +50,7 @@ function addToFila(socket, filaAtual) {
 	const num = Object.keys(filas.fila[index]).length;
 	const senha = filas.senha[index].cont++;
 	filas.fila[index][socket.id] = senha;
-	io.to(filaAtual).emit('users-in-fila', num);
+	io.to(filaAtual).emit("users-in-fila", num);
 }
 
 // Método para remover um user da fila
@@ -50,7 +59,7 @@ function removeFromFila(socket) {
 		if (filas.fila[i][socket.id]) {
 			delete filas.fila[i][socket.id];
 			const fila = filas.fila[i].id;
-			io.emit('user-left', fila);
+			io.emit("user-left", fila);
 			socket.disconnect();
 		}
 	}
@@ -63,7 +72,7 @@ function atenderSenha() {
 		if (filas.fila[i][senhaId]) {
 			delete filas.fila[i][senhaId];
 			const fila = filas.fila[i].id;
-			io.emit('user-left', fila);
+			io.emit("user-left", fila);
 			if (io.sockets.connected[senhaId]) {
 				io.sockets.connected[senhaId].disconnect();
 			}
@@ -80,7 +89,7 @@ function updateUsersInFila(filaAtual) {
 		.indexOf(filaAtual);
 
 	const numUsers = Object.keys(filas.fila[index]).length - 1;
-	io.to(filaAtual).emit('users-in-fila', numUsers);
+	io.to(filaAtual).emit("users-in-fila", numUsers);
 }
 
 // Método para fazer update ao número de pessoas nas filas e à senha seguinte
@@ -92,7 +101,7 @@ function updateDashboard() {
 		users.push(Object.keys(filas.fila[i]).length - 1);
 		senhas.push(Object.values(filas.fila[i]));
 	}
-	io.emit('dashboard-filas', { users: users, senhas: senhas });
+	io.emit("dashboard-filas", { users: users, senhas: senhas });
 }
 
 // Método para fazer update à senha seguinte
@@ -105,15 +114,15 @@ function updatePainel(filaAtual, balcao) {
 		.indexOf(filaAtual);
 
 	let senha = Object.values(filas.fila[index])[1];
-	io.emit('painel-senhas', filaAtual, senha, balcao);
+	io.emit("painel-senhas", filaAtual, senha, balcao);
 }
 
 // Eventos Socket.IO ================================================
 
 // EVENTO onConnection
-io.on('connection', (socket) => {
+io.on("connection", socket => {
 	// EVENTO na ligação de um novo user
-	socket.on('new-user', (fila) => {
+	socket.on("new-user", fila => {
 		socket.join(fila, () => {
 			addToFila(socket, fila);
 			updateDashboard();
@@ -121,42 +130,44 @@ io.on('connection', (socket) => {
 	});
 
 	// EVENTO para retornar o nº de users presentes na fila
-	socket.on('get-number-users', (fila) => {
+	socket.on("get-number-users", fila => {
 		updateUsersInFila(fila);
 	});
 
-	socket.on('painel', () => {
-		// TODO Dados no painel, ao painel entrar??
+	socket.on("painel", () => {
+		// TODO Dados no painel ao painel entrar??
 		//updatePainel();
 	});
 
 	// EVENTO
-	socket.on('dashboard', () => {
+	socket.on("dashboard", () => {
 		updateDashboard();
 	});
 
 	// EVENTO
-	socket.on('chamar-senha', (fila, balcao) => {
+	socket.on("chamar-senha", (fila, balcao) => {
 		updatePainel(fila, balcao);
-		io.to(fila).emit('balcao', balcao);
+		io.to(fila).emit("balcao", balcao);
 	});
 
 	// EVENTO
-	socket.on('senha-atendida', () => {
+	socket.on("senha-atendida", () => {
 		atenderSenha();
 		updateDashboard();
-		io.emit('painel-senhas', 'A', '000', '---');
+		// io.emit("painel-senhas", "A", "000", "---");
 	});
 
 	// EVENTO onDisconnect
-	socket.on('disconnect', () => {
+	socket.on("disconnect", () => {
 		removeFromFila(socket);
 		updateDashboard();
 	});
 });
 
 server.listen(3000, function() {
-	console.log(new Date() + '\nServer a correr na porta 3000');
+	console.log(new Date() + "\nServer a correr na porta 3000");
 });
 
-//TODO TTS?
+// TODO Clientes Prioritários
+
+// TODO TTS?

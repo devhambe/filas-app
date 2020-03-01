@@ -135,6 +135,8 @@ socket.on('dashboard-filas', (data) => {
     const next = ['.next-A', '.next-B', '.next-C', '.next-D'];
     populateUsers(qtd, data.users);
     populateSenhas(next, data.senhas);
+    // TODO tempo de espera
+
 });
 
 $('#senha-modal').on('show.bs.modal', function(e) {
@@ -158,9 +160,11 @@ $('#atender-senha').click(function() {
     //TODO enviar fila
 });
 
-mostrarFuncao('<%= nivel %>', '<%= id %>');
+// TODO
+// O médico deverá poder ainda transferir o cliente de uma lista para outra no atendimento(diagnostico inicial errado)
+// fazendo com que o cliente vá para o fim dessa lista no servidor(a menos que seja prioritário)
 
-// TODO tempo de espera
+mostrarFuncao('<%= nivel %>', '<%= id %>');
 
 </script>
 
