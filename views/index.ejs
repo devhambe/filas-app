@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="icon" href="favicon.ico">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="icon" href="favicon.ico" />
     <title>Senhas</title>
 </head>
 
@@ -14,24 +14,23 @@
     <div class="container-fluid">
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4" id=fila-status></h1>
+                <h1 class="display-4" id="fila-status"></h1>
             </div>
-
         </div>
         <div class="div-buttons">
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value='A'>
+            <button class="btn btn-primary btn-lg btn-block btn-senha" value="A">
                 A - Coisa 1
             </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value='B'>
+            <button class="btn btn-primary btn-lg btn-block btn-senha" value="B">
                 B - Coisa 2
             </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value='C'>
+            <button class="btn btn-primary btn-lg btn-block btn-senha" value="C">
                 C - Coisa 3
             </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value='D'>
+            <button class="btn btn-primary btn-lg btn-block btn-senha" value="D">
                 D - Coisa 4
             </button>
         </div>
@@ -43,33 +42,35 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-const socket = io('http://localhost:3000');
-let fila;
-const btnSenha = $('.btn-senha');
+    const socket = io("http://localhost:3000");
+    let fila;
+    const btnSenha = $(".btn-senha");
 
-btnSenha.click(function() {
-    $('.div-buttons').hide();
-    fila = $(this).val();
-    socket.emit('new-user', fila);
-});
+    btnSenha.click(function () {
+        $(".div-buttons").hide();
+        fila = $(this).val();
+        socket.emit("new-user", fila);
+    });
 
-socket.on('users-in-fila', (numUsers) => {
-    $('#fila-status').text(`${numUsers} pessoa(s) na fila`);
-});
+    socket.on("users-in-fila", (numUsers, filaAtual) => {
+        $("#fila-status").text(`O utilizador encontra-se na fila ${filaAtual} \nHá ${numUsers} pessoa(s) na fila`);
+        // TODO Aspeto
+    });
 
-socket.on('user-left', (fila) => {
-    socket.emit('get-number-users', fila);
-});
+    socket.on("user-left", fila => {
+        socket.emit("get-number-users", fila);
+    });
 
-socket.on('balcao', (balcao) => {
-    $('#fila-status').text(`É a sua vez! Diriga-se ao balcão ${balcao}`);
-});
+    socket.on("balcao", balcao => {
+        $("#fila-status").text(
+            `É a sua vez! Diriga-se ao balcão ${balcao}`
+        );
+    });
 
-socket.on('disconnect', () => {
-    location.reload();
-    // TODO bug estranho
-});
-
+    socket.on("disconnect", () => {
+        location.reload();
+        // TODO bug estranho
+    });
 </script>
 
 </html>

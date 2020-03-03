@@ -40,7 +40,7 @@ const filas = {
 };
 
 // Método para adicionar um novo user à fila
-function addToFila(socket, filaAtual) {
+function addToFila(socketId, filaAtual) {
 	let index = filas.fila
 		.map(function(a) {
 			return a.id;
@@ -49,8 +49,8 @@ function addToFila(socket, filaAtual) {
 
 	const num = Object.keys(filas.fila[index]).length;
 	const senha = filas.senha[index].cont++;
-	filas.fila[index][socket.id] = senha;
-	io.to(filaAtual).emit("users-in-fila", num);
+	filas.fila[index][socketId] = senha;
+	io.to(filaAtual).emit("users-in-fila", num, filaAtual);
 }
 
 // Método para remover um user da fila
@@ -89,7 +89,7 @@ function updateUsersInFila(filaAtual) {
 		.indexOf(filaAtual);
 
 	const numUsers = Object.keys(filas.fila[index]).length - 1;
-	io.to(filaAtual).emit("users-in-fila", numUsers);
+	io.to(filaAtual).emit("users-in-fila", numUsers, filaAtual);
 }
 
 // Método para fazer update ao número de pessoas nas filas e à senha seguinte
@@ -117,16 +117,35 @@ function updatePainel(filaAtual, balcao) {
 	io.emit("painel-senhas", filaAtual, senha, balcao);
 }
 
+// Método em que o cliente é removido da fila atual e acrescentado a uma fila nova
+function trocarFila(filaAtual, filaNova) {
+	let index = filas.fila
+		.map(function(a) {
+			return a.id;
+		})
+		.indexOf(filaAtual);
+	const socketId = Object.keys(filas.fila[index])[1];
+	for (let i = 0; i < filas.fila.length; i++) {
+		if (filas.fila[i][socketId]) {
+			delete filas.fila[i][socketId];
+		}
+	}
+	const socket_cliente = io.sockets.connected[socketId];
+	socket_cliente.leave(filaAtual);
+	socket_cliente.join(filaNova);
+	addToFila(socketId, filaNova);
+	updateDashboard();
+}
+
 // Eventos Socket.IO ================================================
 
 // EVENTO onConnection
 io.on("connection", socket => {
 	// EVENTO na ligação de um novo user
 	socket.on("new-user", fila => {
-		socket.join(fila, () => {
-			addToFila(socket, fila);
-			updateDashboard();
-		});
+		socket.join(fila);
+		addToFila(socket.id, fila);
+		updateDashboard();
 	});
 
 	// EVENTO para retornar o nº de users presentes na fila
@@ -150,6 +169,10 @@ io.on("connection", socket => {
 		io.to(fila).emit("balcao", balcao);
 	});
 
+	socket.on("trocar-fila", (filaAtual, filaNova) => {
+		trocarFila(filaAtual, filaNova);
+	});
+
 	// EVENTO
 	socket.on("senha-atendida", () => {
 		atenderSenha();
@@ -169,5 +192,3 @@ server.listen(3000, function() {
 });
 
 // TODO Clientes Prioritários
-
-// TODO TTS?
