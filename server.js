@@ -183,6 +183,7 @@ io.on("connection", socket => {
 		atenderSenha(fila);
 		updateDashboard();
 		// console.log(data);
+		// TODO outra fila para médicos?
 		// io.emit("painel-senhas", "A", "000", "---");
 	});
 
