@@ -66,15 +66,20 @@ function removeFromFila(socket) {
 }
 
 // Método para atender a senha do cliente (e removê-lo da fila)
-function atenderSenha() {
+function atenderSenha(filaAtual) {
+	let index = filas.fila
+		.map(function(a) {
+			return a.id;
+		})
+		.indexOf(filaAtual);
+	const socketId = Object.keys(filas.fila[index])[1];
 	for (let i = 0; i < filas.fila.length; i++) {
-		const senhaId = Object.keys(filas.fila[i])[1];
-		if (filas.fila[i][senhaId]) {
-			delete filas.fila[i][senhaId];
+		if (filas.fila[i][socketId]) {
+			delete filas.fila[i][socketId];
 			const fila = filas.fila[i].id;
 			io.emit("user-left", fila);
-			if (io.sockets.connected[senhaId]) {
-				io.sockets.connected[senhaId].disconnect();
+			if (io.sockets.connected[socketId]) {
+				io.sockets.connected[socketId].disconnect();
 			}
 		}
 	}
@@ -174,9 +179,10 @@ io.on("connection", socket => {
 	});
 
 	// EVENTO
-	socket.on("senha-atendida", () => {
-		atenderSenha();
+	socket.on("senha-atendida", (data, fila) => {
+		atenderSenha(fila);
 		updateDashboard();
+		// console.log(data);
 		// io.emit("painel-senhas", "A", "000", "---");
 	});
 

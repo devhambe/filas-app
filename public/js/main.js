@@ -58,8 +58,18 @@ function populatePainel(fila, senha, balcao) {
 	} else if (senha >= 10) {
 		senha = "0" + senha;
 	}
-	$(`#senha-${fila}`).text(senha);
-	$(`#balcao-${fila}`).text(balcao);
+	$(`#senha-${fila}`)
+		.text(senha)
+		.fadeOut()
+		.fadeIn()
+		.fadeOut()
+		.fadeIn();
+	$(`#balcao-${fila}`)
+		.text(balcao)
+		.fadeOut()
+		.fadeIn()
+		.fadeOut()
+		.fadeIn();
 }
 
 function mostrarFuncao(nivel, id) {
@@ -86,4 +96,15 @@ function mostrarFuncao(nivel, id) {
 		});
 	}
 	$(".funcao").text(funcao);
+}
+
+function serializeToJson($form) {
+	let serializedArray = $form.serializeArray();
+	let jsonObject = {};
+
+	$.map(serializedArray, function(n, i) {
+		jsonObject[n["name"]] = n["value"];
+	});
+
+	return jsonObject;
 }

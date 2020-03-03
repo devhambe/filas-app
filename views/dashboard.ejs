@@ -109,11 +109,61 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Senha ---</h5>
+                        <h5 class="modal-title">Dados do cliente:</h5>
+                        <h5 class="modal-senha"></h5>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- TODO Dados do cliente ??? -->
+                        <form id="form-cliente">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="primeiro_nome">Primeiro Nome</label>
+                                    <input type="text" class="form-control" name="primeiro_nome">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="ultimo_nome">Último Nome</label>
+                                    <input type="text" class="form-control" name="ultimo_nome">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <label for="morada">Morada</label>
+                                    <input type="text" class="form-control" name="morada">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="cod_postal">Código Postal</label>
+                                    <input type="text" class="form-control" name="cod_postal">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="cidade">Cidade</label>
+                                    <input type="text" class="form-control" name="cidade">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="concelho">Concelho</label>
+                                    <input type="text" class="form-control" name="concelho">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" name="email">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="telefone">Telefone</label>
+                                    <input type="text" class="form-control" name="telefone">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer">
                         <div class="dropdown">
@@ -123,8 +173,9 @@
                             <div class="dropdown-menu">
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="atender-senha">Marcar
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="atender-senha">Marcar
                             como atendido</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -160,8 +211,8 @@
         const button = $(e.relatedTarget);
         const fila = button.data('fila');
         const modal = $(this);
-        modal.find('.modal-title').attr('class', `modal-title next-${fila}`);
-
+        modal.attr('data-fila', fila)
+        modal.find('.modal-senha').attr('class', `modal-title next-${fila}`);
         let filas = ['A', 'B', 'C', 'D'];
         filas.splice(filas.indexOf(fila), 1);
         modal.find('.dropdown-menu').empty();
@@ -185,9 +236,13 @@
     });
 
     // Ao marcar o cliente como 'atendido'
-    $('#atender-senha').click(function () {
-        socket.emit('senha-atendida');
-        //TODO enviar fila
+    $(document).on('click', '#atender-senha', function (e) {
+        e.preventDefault();
+        const fila = $('#senha-modal').attr('data-fila');
+        const $form = $('#form-cliente');
+        const data = serializeToJson($form);
+        $('#form-cliente').trigger("reset");
+        socket.emit('senha-atendida', data, fila);
     });
 
     mostrarFuncao('<%= nivel %>', '<%= id %>');
