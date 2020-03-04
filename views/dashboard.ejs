@@ -23,7 +23,7 @@
                     </div>
                     <div class="fila-desc col-2">
                         Fila de espera <br>
-                        temptemptemp
+                        <b>Atendimento Geral</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -34,7 +34,7 @@
                         <span class="next-A">...</span>
                     </div>
                     <div class="fila-call col-1">
-                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal"
+                        <button class="btn btn-custom btn-chamar" data-toggle="modal" data-target="#senha-modal"
                             data-backdrop="static" data-keyboard="false" data-fila="A">CHAMAR</button>
                     </div>
                 </div>
@@ -44,7 +44,8 @@
                     </div>
                     <div class="fila-desc col-2">
                         Fila de espera <br>
-                        temptemptemp
+                        <b>Atendimento Geral</b>
+                        <!-- TODO ideias -->
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -55,7 +56,7 @@
                         <span class="next-B">...</span>
                     </div>
                     <div class="fila-call col-1">
-                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal"
+                        <button class="btn btn-custom btn-chamar" data-toggle="modal" data-target="#senha-modal"
                             data-backdrop="static" data-keyboard="false" data-fila="B">CHAMAR</button>
                     </div>
                 </div>
@@ -65,7 +66,7 @@
                     </div>
                     <div class="fila-desc col-2">
                         Fila de espera <br>
-                        temptemptemp
+                        <b>Atendimento Geral</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -76,7 +77,7 @@
                         <span class="next-C">...</span>
                     </div>
                     <div class="fila-call col-1">
-                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal"
+                        <button class="btn btn-custom btn-chamar" data-toggle="modal" data-target="#senha-modal"
                             data-backdrop="static" data-keyboard="false" data-fila="C">CHAMAR</button>
                     </div>
                 </div>
@@ -86,7 +87,7 @@
                     </div>
                     <div class="fila-desc col-2">
                         Fila de espera <br>
-                        temptemptemp
+                        <b>Atendimento Geral</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -97,7 +98,7 @@
                         <span class="next-D">...</span>
                     </div>
                     <div class="fila-call col-1">
-                        <button class="btn btn-chamar" data-toggle="modal" data-target="#senha-modal"
+                        <button class="btn btn-custom btn-chamar" data-toggle="modal" data-target="#senha-modal"
                             data-backdrop="static" data-keyboard="false" data-fila="D">CHAMAR</button>
                     </div>
                 </div>
@@ -167,13 +168,13 @@
                     </div>
                     <div class="modal-footer">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                            <button class="btn btn-custom dropdown-toggle" type="button" data-toggle="dropdown">
                                 Transferir para outra lista
                             </button>
                             <div class="dropdown-menu">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="atender-senha">Marcar
+                        <button type="submit" class="btn btn-custom" data-dismiss="modal" id="atender-senha">Marcar
                             como atendido</button>
                         </form>
                     </div>
@@ -241,8 +242,9 @@
         const fila = $('#senha-modal').attr('data-fila');
         const $form = $('#form-cliente');
         const data = serializeToJson($form);
+        // TODO registar na bd?
         $('#form-cliente').trigger("reset");
-        socket.emit('senha-atendida', data, fila);
+        socket.emit('senha-atendida', fila);
     });
 
     mostrarFuncao('<%= nivel %>', '<%= id %>');

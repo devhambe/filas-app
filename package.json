@@ -17,6 +17,7 @@
 		"express-session": "^1.17.0",
 		"jquery": "^3.4.1",
 		"mysql": "^2.18.1",
+		"newsapi": "^2.4.0",
 		"nodemon": "^2.0.2",
 		"socket.io": "^2.3.0"
 	},

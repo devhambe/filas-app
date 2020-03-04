@@ -11,29 +11,29 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-                <h1 class="display-4" id="fila-status"></h1>
-            </div>
+
+    <div class="jumbotron jumbotron-fluid text-center">
+        <div class="container">
+            <h1 class="display-4" id="fila-status"></h1>
+            <h1 class="display-4" id="senha-status"></h1>
         </div>
-        <div class="div-buttons">
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value="A">
-                A - Coisa 1
-            </button>
+    </div>
+    <div class="div-buttons">
+        <button class="btn btn-lg btn-block btn-senha btn-custom" value="A">
+            A - Atendimento Geral
+        </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value="B">
-                B - Coisa 2
-            </button>
+        <button class="btn btn-lg btn-block btn-senha btn-custom" value="B">
+            B - Coisa 2
+        </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value="C">
-                C - Coisa 3
-            </button>
+        <button class="btn btn-lg btn-block btn-senha btn-custom" value="C">
+            C - Coisa 3
+        </button>
 
-            <button class="btn btn-primary btn-lg btn-block btn-senha" value="D">
-                D - Coisa 4
-            </button>
-        </div>
+        <button class="btn btn-lg btn-block btn-senha btn-custom" value="D">
+            D - Coisa 4
+        </button>
     </div>
 </body>
 
@@ -53,7 +53,9 @@
     });
 
     socket.on("users-in-fila", (numUsers, filaAtual) => {
-        $("#fila-status").text(`O utilizador encontra-se na fila ${filaAtual} \nHá ${numUsers} pessoa(s) na fila`);
+        $("#fila-status").html(`O utilizador encontra-se na fila ${filaAtual} <br> Há ${numUsers} pessoa(s) na fila`);
+        $('#senha-status').html(`Senha: `);
+        // TODO receber senha
         // TODO Aspeto
     });
 

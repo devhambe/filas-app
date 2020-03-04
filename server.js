@@ -179,11 +179,10 @@ io.on("connection", socket => {
 	});
 
 	// EVENTO
-	socket.on("senha-atendida", (data, fila) => {
+	socket.on("senha-atendida", fila => {
 		atenderSenha(fila);
 		updateDashboard();
 		// console.log(data);
-		// TODO outra fila para médicos?
 		// io.emit("painel-senhas", "A", "000", "---");
 	});
 
