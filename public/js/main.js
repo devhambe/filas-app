@@ -84,6 +84,8 @@ function populatePainel(fila, senha, balcao) {
 	} else if (senha >= 10) {
 		senha = "0" + senha;
 	}
+
+	// Pequena animação de piscar
 	$(`#senha-${fila}`)
 		.text(senha)
 		.fadeOut()
@@ -97,6 +99,7 @@ function populatePainel(fila, senha, balcao) {
 		.fadeOut()
 		.fadeIn();
 
+	// Reprodução de audio
 	const audio_senha = document.getElementById("audio-senha");
 	audio_senha.play();
 }
@@ -121,7 +124,7 @@ function mostrarFuncao(nivel, id) {
 			success: function(res) {
 				res = JSON.parse(res);
 				if (res.length == 0) {
-					$(".btn-chamar").prop("disabled", true);
+					$(".btn-chamar").hide();
 				} else {
 					$(".balcao-atual").text(`Balcão nº ${res[0].numero}`);
 					$(".balcao-atual").attr("data-id", res[0].numero);

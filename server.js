@@ -16,7 +16,7 @@ const session = require("express-session");
 /** @requires Routes/Routes */
 const routes = require("./routes/routes");
 
-/** @requires Server */
+/** @requires Http */
 const server = require("http").createServer(app);
 
 /** @requires SocketIO */
@@ -49,7 +49,8 @@ app.use(
 );
 
 /**
- * Definição do template engine para o uso dos ficheiros estáticos e o uso de variavéis nas páginas HTML
+ * Definição do template engine para o uso dos ficheiros estáticos e
+ *  o uso de variavéis nas páginas HTML
  * O template engine utilizado é o EJS
  */
 app.set("view engine", "ejs");
@@ -87,7 +88,8 @@ const filas = {
 };
 
 /**
- * Função para encontrar o índice de um array que contém objetos utilizando a função Array.prototype.map()
+ * Função para encontrar o índice de um array que contém objetos
+ *  utilizando a função Array.prototype.map()
  * Source: https://stackoverflow.com/a/16008853
  * @param {Array} filas
  * @param {string} indexOf
@@ -120,9 +122,11 @@ function addToFila(socketId, filaAtual) {
 	const senhaUser = filaAtual + cont;
 	filas.fila[index][socketId] = cont;
 
-	/** Emissões de eventos para a sala do cliente*/
+	/** Emissão para a sala do cliente*/
 	io.to(filaAtual).emit("users-in-fila", num, filaAtual);
-	io.to(filaAtual).emit("user-senha", senhaUser);
+
+	/** Emissão só para o socket */
+	io.to(socketId).emit("user-senha", senhaUser);
 }
 
 /**
@@ -137,7 +141,10 @@ function removeFromFila(socket) {
 	for (let i = 0; i < filas.fila.length; i++) {
 		/** Verifica-se a existência do socket dentro da fila (através do socket.id)*/
 		if (filas.fila[i][socket.id]) {
-			/** Remove-se o cliente da fila e é emitido um evento para todos os sockets que um cliente da fila «tal» */
+			/**
+			 *  Remove-se o cliente da fila e é emitido um evento
+			 *  para todos os sockets que um cliente da fila «tal»
+			 */
 			delete filas.fila[i][socket.id];
 			const fila = filas.fila[i].id;
 			io.emit("user-left", fila);
@@ -246,11 +253,6 @@ io.on("connection", socket => {
 	/** EVENTO para retornar o nº de users presentes na fila */
 	socket.on("get-number-users", fila => {
 		updateUsersInFila(fila);
-	});
-
-	socket.on("painel", () => {
-		// TODO Dados no painel ao painel entrar??
-		//updatePainel();
 	});
 
 	/** EVENTO para atualizar o dashboard, quando alguem entra no dashboard */

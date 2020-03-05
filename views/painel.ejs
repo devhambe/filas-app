@@ -151,8 +151,6 @@
 	getTime();
 	getDate();
 
-	socket.emit("painel");
-
 	socket.on("painel-senhas", (fila, senha, balcao) => {
 		populatePainel(fila, senha, balcao);
 	});

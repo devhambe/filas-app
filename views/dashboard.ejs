@@ -182,8 +182,10 @@
 <script>
     const socket = io.connect();
 
+    // Atualiza o dashboard ao carregar a página
     socket.emit('dashboard');
 
+    // Recebe os dados das filas e preenche os elementos
     socket.on('dashboard-filas', (data) => {
         const qtd = ['#qtd-A', '#qtd-B', '#qtd-C', '#qtd-D'];
         const next = ['.next-A', '.next-B', '.next-C', '.next-D'];
@@ -191,24 +193,33 @@
         populateSenhas(next, data.senhas);
     });
 
+    // Quando o modal é aberto, altera os dados para bater certo com a fila pretendida
     $('#senha-modal').on('show.bs.modal', function (e) {
         socket.emit('dashboard');
 
         const button = $(e.relatedTarget);
+        // Vai buscar o atributo data-fila do botão
         const fila = button.data('fila');
         const modal = $(this);
         modal.attr('data-fila', fila)
+        // Adiciona uma classe ao modal para ser preenchido com a senha ao atualizar
         modal.find('.modal-senha').attr('class', `modal-senha next-${fila}`);
 
+        // Preenchimento do dropdown da transferência de filas
         let filas = ['A', 'B', 'C', 'D'];
         filas.splice(filas.indexOf(fila), 1);
 
         modal.find('.dropdown-menu').empty();
         for (let i = 0; i < filas.length; i++) {
-            modal.find('.dropdown-menu').append(`<a class="dropdown-item trocar-fila" href="#" data-fila_atual=${fila} data-fila_nova="${filas[i]}"> Fila ${filas[i]}</a>`);
+            modal.find('.dropdown-menu').append(`
+            <a class="dropdown-item trocar-fila" href="#" data-fila_atual=${fila} data-fila_nova="${filas[i]}">
+                Fila ${filas[i]}
+            </a>
+            `);
         }
     });
 
+    // Ao clicar no botão de trocar fila, emite um evento com a fila atual e a fila nova
     $(document).on('click', '.trocar-fila', function () {
         const filaAtual = $(this).data('fila_atual');
         const filaNova = $(this).data('fila_nova');
@@ -216,20 +227,21 @@
         $('#senha-modal').modal('hide');
     });
 
-    // Ao carregar no botão de chamar
-    $('.btn-chamar').click(function () {
+    // Ao carregar no botão de chamar, emite um evento
+    $(document).on('click', '.btn-chamar', function () {
         const fila = $(this).data('fila');
         const balcao = $('.balcao-atual').data('id');
         socket.emit('chamar-senha', fila, balcao);
     });
 
-    // Ao marcar o cliente como 'atendido'
+    // Ao marcar o cliente como 'atendido', emite um evento
     $(document).on('click', '#atender-senha', function (e) {
         e.preventDefault();
         const fila = $('#senha-modal').attr('data-fila');
         socket.emit('senha-atendida', fila);
     });
 
+    // Ao submeter o formulário dos cliente, adiciona o registo à base de dados por AJAX
     $('#form-cliente').submit(function (e) {
         e.preventDefault();
         const $form = $('#form-cliente');

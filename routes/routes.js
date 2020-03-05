@@ -170,6 +170,7 @@ router.post("/login", (req, res) => {
  */
 router.post("/register", async (req, res) => {
 	try {
+		/** Encriptação da password */
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
 		const sql =
@@ -187,10 +188,6 @@ router.post("/register", async (req, res) => {
 		res.redirect("/register");
 	}
 });
-
-/**
- * Rotas para chamadas Ajax por POST
- */
 
 /** Ajax request que retorna todos utilizadores */
 router.post("/ajax/users", (req, res) => {
@@ -395,7 +392,7 @@ router.post("/ajax/clientes/delete", (req, res) => {
 	}
 });
 
-/** Ajax request que retorna os dados buscados pela API de notiícias */
+/** Ajax request que retorna os dados buscados pela API de notícias */
 router.post("/ajax/noticias", (req, res) => {
 	try {
 		const noticias = {

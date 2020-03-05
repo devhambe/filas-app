@@ -45,32 +45,42 @@
 <script>
     const socket = io.connect();
 
-    $(".btn-senha").click(function () {
+    // Ao clicar num dos buttons de chamada de senha
+    $(document).on('click', '.btn-senha', function () {
+        // Esconde os buttons
         $(".div-buttons").hide();
+
+        // Emite um evento new-user com a fila
         const fila = $(this).val();
         socket.emit("new-user", fila);
     });
 
+    // Atualização do número de clientes na fila quando um cliente entra
     socket.on("users-in-fila", (numUsers, filaAtual) => {
         const fila = $(`button[value='${filaAtual}']`).text();
         $("#fila-status").html(`Fila ${fila} <br> <i class="fas fa-users"></i> ${numUsers} `);
     });
 
+    // Atualização da senha do cliente
     socket.on('user-senha', (senha) => {
         $('#senha-status').html(`<i class="fas fa-ticket-alt"></i> ${senha}`);
     });
 
+    // Atualização do número de clientes na fila quando um cliente sai
     socket.on("user-left", fila => {
         socket.emit("get-number-users", fila);
     });
 
+    // Quando o cliente é chamado, mostra o balcão
     socket.on("balcao", balcao => {
         $("#fila-status").text(
             `É a sua vez! Dirija-se ao balcão ${balcao}`
         );
+        // Se o cliente estiver a usar um telemóvel, vibra 2 vezes
         window.navigator.vibrate([500, 10, 500]);
     });
 
+    // Ao cliente ser desconectado (atendido) refresh à página
     socket.on("disconnect", () => {
         location.reload();
         // TODO bug reload
