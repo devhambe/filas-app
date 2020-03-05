@@ -1,14 +1,16 @@
+/** Chamada das variavéis de ambiente no .env */
 require("dotenv").config();
-/** @module Express */
+
+/** @requires Express */
 const express = require("express");
 
-/** @module ExpressRouter */
+/** @requires ExpressRouter */
 const router = express.Router();
 
-/** @module Bcrypt */
+/** @requires Bcrypt */
 const bcrypt = require("bcrypt");
 
-/** @module Mysql */
+/** @requires Mysql */
 const mysql = require("mysql");
 
 /** @constant
@@ -22,7 +24,7 @@ const con = mysql.createConnection({
 });
 
 /**
- *  @module NewsAPI API de notícias
+ *  @requires NewsAPI API de notícias
  */
 const NewsAPI = require("newsapi");
 
@@ -33,7 +35,7 @@ const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
 /**
- * Método para autenticar o acesso às páginas
+ * Função para autenticar o acesso às páginas
  * Nivel 0 : Acesso a todos os níveis
  * @param {Request} req
  * @param {Response} res
@@ -108,7 +110,7 @@ router.post("/login", (req, res) => {
 	const email = req.body.email;
 	const password = req.body.password;
 	/**
-	 * Método para a verificação do utilizador na base de dados para o login
+	 * Função para a verificação do utilizador na base de dados para o login
 	 * @param {string} email
 	 * @param {string} password
 	 */
@@ -190,6 +192,7 @@ router.post("/register", async (req, res) => {
  * Rotas para chamadas Ajax por POST
  */
 
+/** Ajax request que retorna todos utilizadores */
 router.post("/ajax/users", (req, res) => {
 	try {
 		const sql =
@@ -204,6 +207,7 @@ router.post("/ajax/users", (req, res) => {
 	}
 });
 
+/** Ajax request que elimina um utilizador */
 router.post("/ajax/users/delete", (req, res) => {
 	try {
 		const sql = "DELETE FROM users WHERE id = ?";
@@ -216,7 +220,7 @@ router.post("/ajax/users/delete", (req, res) => {
 	}
 });
 
-// Request que retorna todos os balcões existentes para serem apresentados na tabela
+/** Ajax request que retorna todos os balcões existentes para serem apresentados na tabela */
 router.post("/ajax/balcoes", (req, res) => {
 	try {
 		const sql =
@@ -231,7 +235,7 @@ router.post("/ajax/balcoes", (req, res) => {
 	}
 });
 
-// Request que retorna o balcão atual do operador ( se estiver em uso )
+/** Ajax request que retorna o balcão atual do operador ( se estiver em uso ) */
 router.post("/ajax/balcao", (req, res) => {
 	try {
 		const sql =
@@ -246,7 +250,7 @@ router.post("/ajax/balcao", (req, res) => {
 	}
 });
 
-// Request para adicionar um novo balcão
+/** Ajax request para adicionar um novo balcão */
 router.post("/ajax/balcoes/add", (req, res) => {
 	try {
 		if (req.body.estado === undefined) {
@@ -267,7 +271,7 @@ router.post("/ajax/balcoes/add", (req, res) => {
 	} catch (err) {}
 });
 
-// Request para atualizar um balcão existente
+/** Ajax request para atualizar um balcão existente */
 router.post("/ajax/balcoes/update", (req, res) => {
 	try {
 		if (req.body.estado === undefined) {
@@ -290,7 +294,7 @@ router.post("/ajax/balcoes/update", (req, res) => {
 	}
 });
 
-// Request para remover um balcão
+/** Ajax request para remover um balcão */
 router.post("/ajax/balcoes/delete", (req, res) => {
 	try {
 		const sql = "DELETE FROM balcoes where id = ?";
@@ -303,7 +307,7 @@ router.post("/ajax/balcoes/delete", (req, res) => {
 	}
 });
 
-// Request que retorna os dados de um determinado balcão para a sua edição
+/** Ajax request que retorna os dados de um determinado balcão para a sua edição */
 router.post("/ajax/balcoes/edit", (req, res) => {
 	try {
 		const sql = "SELECT * FROM balcoes where id = ?";
@@ -317,7 +321,7 @@ router.post("/ajax/balcoes/edit", (req, res) => {
 	}
 });
 
-// Request que retorna os todos os operadores que não têm um balcão associado
+/** Ajax request que retorna os todos os operadores que não têm um balcão associado */
 router.post("/ajax/operadores", (req, res) => {
 	try {
 		let sql;
@@ -337,6 +341,7 @@ router.post("/ajax/operadores", (req, res) => {
 	}
 });
 
+/** Ajax request que retorna todos os clientes */
 router.post("/ajax/clientes", (req, res) => {
 	try {
 		const sql = "SELECT * FROM clientes";
@@ -350,6 +355,7 @@ router.post("/ajax/clientes", (req, res) => {
 	}
 });
 
+/** Ajax request para adicionar um novo cliente */
 router.post("/ajax/clientes/add", (req, res) => {
 	try {
 		const sql = `INSERT INTO clientes (nome, apelido, morada, cod_postal, cidade, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)`;
@@ -375,6 +381,7 @@ router.post("/ajax/clientes/add", (req, res) => {
 	}
 });
 
+/** Ajax request para remover um cliente */
 router.post("/ajax/clientes/delete", (req, res) => {
 	try {
 		const sql = "DELETE FROM clientes where id = ?";
@@ -388,6 +395,7 @@ router.post("/ajax/clientes/delete", (req, res) => {
 	}
 });
 
+/** Ajax request que retorna os dados buscados pela API de notiícias */
 router.post("/ajax/noticias", (req, res) => {
 	try {
 		const noticias = {
@@ -395,14 +403,24 @@ router.post("/ajax/noticias", (req, res) => {
 			desc: [],
 			img: []
 		};
+		/**
+		 * Request à API de notícias
+		 * Documentação oficial:
+		 * https://newsapi.org/docs
+		 */
 		newsapi.v2
 			.topHeadlines({
+				/** Parametros do request */
+
+				/** País onde vai buscar as notícias */
 				country: "pt",
-				language: "pt",
+				/** O número de notícias que vai buscar */
 				pageSize: "5",
+				/** A categoria das notícias */
 				category: "general"
 			})
 			.then(news => {
+				/** Adição do título, da descrição e do link da imagem da notícia em arrays */
 				for (k in news.articles) {
 					noticias.title.push(news.articles[k].title);
 					noticias.desc.push(news.articles[k].description);
@@ -415,4 +433,8 @@ router.post("/ajax/noticias", (req, res) => {
 	}
 });
 
+/**
+ * Exportação deste ficheiro como o módulo 'router'
+ * @module router
+ */
 module.exports = router;
