@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css" />
     <link rel="icon" href="favicon.ico">
-    <title>Document</title>
+    <title>Registrar Utilizadores</title>
 </head>
+
 <body>
     <div class="d-flex wrapper">
 
@@ -25,7 +27,8 @@
                                         <i class="fas fa-user"></i>
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome" required>
+                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -37,7 +40,8 @@
                                         <i class="fas fa-at"></i>
                                     </div>
                                 </div>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -50,7 +54,8 @@
                                         <i class="fas fa-key"></i>
                                     </div>
                                 </div>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Password" required>
                             </div>
                         </div>
                     </div>
@@ -59,7 +64,8 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="nivel"><i class="fas fa-user-shield"></i></label>
+                                    <label class="input-group-text" for="nivel"><i
+                                            class="fas fa-user-shield"></i></label>
                                 </div>
                                 <select class="custom-select" name="nivel" id="nivel" required>
                                     <option disabled selected>Nível de permissões</option>
@@ -103,12 +109,12 @@
     mostrarFuncao('<%= nivel %>', '<%= id %>');
 
     let columns = [
-        {'data' : 'nome'},
-        {'data' : 'email'},
-        {'data' : 'perm'},
+        { 'data': 'nome' },
+        { 'data': 'email' },
+        { 'data': 'perm' },
         {
-            'data' : 'id',
-            render: function(data, type, row) {
+            'data': 'id',
+            render: function (data, type, row) {
                 return "<a href='#' class='user-delete' data-id=" + data + "> <i class='fas fa-trash-alt'></i> </a>";
             }
             //TODO Editar users
@@ -131,15 +137,15 @@
         "autoWidth": false
     });
 
-    $(document).on('click', '.user-delete', function() {
+    $(document).on('click', '.user-delete', function () {
         const userId = $(this).data('id');
         const row = $(this).closest("tr");
         $.ajax({
             type: "POST",
             url: "ajax/users/delete",
-            data: {userId: userId},
-            success: function(data) {
-                row.closest("tr").fadeOut(400, function() {
+            data: { userId: userId },
+            success: function (data) {
+                row.closest("tr").fadeOut(400, function () {
                     $(this).remove();
                 });
             }

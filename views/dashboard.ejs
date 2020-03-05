@@ -22,7 +22,6 @@
                         A
                     </div>
                     <div class="fila-desc col-2">
-                        Fila de espera <br>
                         <b>Atendimento Geral</b>
                     </div>
                     <div class="fila-espera col-2">
@@ -31,7 +30,7 @@
                     </div>
                     <div class="fila-next col-5">
                         <p>Próxima senha</p>
-                        <span class="next-A">...</span>
+                        <span class="next-A">...</span> <span id="timer"></span>
                     </div>
                     <div class="fila-call col-1">
                         <button class="btn btn-custom btn-chamar" data-toggle="modal" data-target="#senha-modal"
@@ -43,9 +42,7 @@
                         B
                     </div>
                     <div class="fila-desc col-2">
-                        Fila de espera <br>
-                        <b>Atendimento Geral</b>
-                        <!-- TODO ideias -->
+                        <b>Escalões</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -65,8 +62,7 @@
                         C
                     </div>
                     <div class="fila-desc col-2">
-                        Fila de espera <br>
-                        <b>Atendimento Geral</b>
+                        <b>Matrículas</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -86,8 +82,7 @@
                         D
                     </div>
                     <div class="fila-desc col-2">
-                        Fila de espera <br>
-                        <b>Atendimento Geral</b>
+                        <b>Manuais Escolares</b>
                     </div>
                     <div class="fila-espera col-2">
                         <p>Em espera</p>
@@ -115,68 +110,59 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <button class="btn btn-custom" id="reg-cliente">Registar cliente?</button>
                         <form id="form-cliente">
                             <div class="form-group row">
                                 <div class="col-md-6">
-                                    <label for="primeiro_nome">Primeiro Nome</label>
-                                    <input type="text" class="form-control" name="primeiro_nome">
+                                    <label for="nome">Nome</label>
+                                    <input type="text" class="form-control" name="nome" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-6">
-                                    <label for="ultimo_nome">Último Nome</label>
-                                    <input type="text" class="form-control" name="ultimo_nome">
+                                    <label for="apelido">Apelido</label>
+                                    <input type="text" class="form-control" name="apelido" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-9">
                                     <label for="morada">Morada</label>
-                                    <input type="text" class="form-control" name="morada">
+                                    <input type="text" class="form-control" name="morada" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="cod_postal">Código Postal</label>
-                                    <input type="text" class="form-control" name="cod_postal">
+                                    <input type="text" class="form-control" name="cod_postal" pattern="^\d{4}-\d{3}$"
+                                        placeholder="ex. 8500-001" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-6">
                                     <label for="cidade">Cidade</label>
-                                    <input type="text" class="form-control" name="cidade">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-6">
-                                    <label for="concelho">Concelho</label>
-                                    <input type="text" class="form-control" name="concelho">
+                                    <input type="text" class="form-control" name="cidade" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-6">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control" name="email">
+                                    <input type="email" class="form-control" name="email" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="telefone">Telefone</label>
-                                    <input type="text" class="form-control" name="telefone">
+                                    <input type="text" class="form-control" name="telefone" required>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-
-                                </div>
-                            </div>
+                            <button type="submit" class="btn btn-custom">Registar</button>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <div class="dropdown">
                             <button class="btn btn-custom dropdown-toggle" type="button" data-toggle="dropdown">
                                 Transferir para outra lista
                             </button>
-                            <div class="dropdown-menu">
-                            </div>
+                            <div class="dropdown-menu"></div>
                         </div>
-                        <button type="submit" class="btn btn-custom" data-dismiss="modal" id="atender-senha">Marcar
+                        <button type="click" class="btn btn-custom" data-dismiss="modal" id="atender-senha">Marcar
                             como atendido</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -194,7 +180,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-    const socket = io('http://localhost:3000');
+    const socket = io.connect();
 
     socket.emit('dashboard');
 
@@ -203,19 +189,20 @@
         const next = ['.next-A', '.next-B', '.next-C', '.next-D'];
         populateUsers(qtd, data.users);
         populateSenhas(next, data.senhas);
-        // TODO tempo de espera
-        // TODO botão chamar disabled
     });
 
     $('#senha-modal').on('show.bs.modal', function (e) {
         socket.emit('dashboard');
+
         const button = $(e.relatedTarget);
         const fila = button.data('fila');
         const modal = $(this);
         modal.attr('data-fila', fila)
-        modal.find('.modal-senha').attr('class', `modal-title next-${fila}`);
+        modal.find('.modal-senha').attr('class', `modal-senha next-${fila}`);
+
         let filas = ['A', 'B', 'C', 'D'];
         filas.splice(filas.indexOf(fila), 1);
+
         modal.find('.dropdown-menu').empty();
         for (let i = 0; i < filas.length; i++) {
             modal.find('.dropdown-menu').append(`<a class="dropdown-item trocar-fila" href="#" data-fila_atual=${fila} data-fila_nova="${filas[i]}"> Fila ${filas[i]}</a>`);
@@ -240,11 +227,31 @@
     $(document).on('click', '#atender-senha', function (e) {
         e.preventDefault();
         const fila = $('#senha-modal').attr('data-fila');
-        const $form = $('#form-cliente');
-        const data = serializeToJson($form);
-        // TODO registar na bd?
-        $('#form-cliente').trigger("reset");
         socket.emit('senha-atendida', fila);
+    });
+
+    $('#form-cliente').submit(function (e) {
+        e.preventDefault();
+        const $form = $('#form-cliente');
+        $.ajax({
+            type: "POST",
+            url: "/ajax/clientes/add",
+            data: $form.serializeArray(),
+            success: function (res) {
+                $form.trigger("reset");
+                $('#reg-cliente').show();
+                $('#reg-cliente').prop('disabled', true);
+                $('#form-cliente').hide();
+                $('#atender-senha').prop('disabled', false);
+            }
+        });
+    });
+
+    $('#reg-cliente').click(function () {
+        $(this).hide();
+        $('#form-cliente').show();
+        $('#form-cliente').trigger('reset');
+        $('#atender-senha').prop('disabled', true);
     });
 
     mostrarFuncao('<%= nivel %>', '<%= id %>');

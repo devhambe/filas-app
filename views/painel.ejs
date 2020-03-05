@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/main.css" />
 	<link rel="icon" href="favicon.ico" />
-	<title>Lista de espera</title>
+	<title>Listas de espera</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 			<div class="col-md-5 div-senhas text-center">
 				<div class="row">
 					<div class="col ">
-						Senha
+						<h1 class="display-4">Senha</h1>
 
 						<div class="row mt-5">
 							<div class="col">
@@ -52,7 +52,7 @@
 					</div>
 
 					<div class="col ">
-						Balcão
+						<h1 class="display-4">Balcão</h1>
 
 						<div class="row mt-5">
 							<div class="col">
@@ -96,21 +96,48 @@
 				</div>
 				<div class="row">
 					<div id="slideshow">
-						<!-- TODO noticias -->
-						<div>
-							aaaaaaaaaaaaaaaa
+						<div class="noticia">
+							<div class="noticia-img-div">
+								<img class="noticia-img img-fluid">
+							</div>
+							<h1 class="noticia-title"></h1>
+							<p class="noticia-desc lead"></p>
 						</div>
-						<div>
-							eeeeeeeeeeeeeeee
+						<div class="noticia">
+							<div class="noticia-img-div">
+								<img class="noticia-img img-fluid">
+							</div>
+							<h1 class="noticia-title"></h1>
+							<p class="noticia-desc lead"></p>
 						</div>
-						<div>
-							uuuuuuuuuuuuuuuu
+						<div class="noticia">
+							<div class="noticia-img-div">
+								<img class="noticia-img img-fluid">
+							</div>
+							<h1 class="noticia-title"></h1>
+							<p class="noticia-desc lead"></p>
+						</div>
+						<div class="noticia">
+							<div class="noticia-img-div">
+								<img class="noticia-img img-fluid">
+							</div>
+							<h1 class="noticia-title"></h1>
+							<p class="noticia-desc lead"></p>
+						</div>
+						<div class="noticia">
+							<div class="noticia-img-div">
+								<img class="noticia-img img-fluid">
+							</div>
+							<h1 class="noticia-title"></h1>
+							<p class="noticia-desc lead"></p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<audio src="/audio/audio.wav" type="audio/wav" id="audio-senha">
+	</audio>
 </body>
 
 <script src="/js/jquery.min.js"></script>
@@ -119,7 +146,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-	const socket = io("http://localhost:3000");
+	const socket = io.connect();
 
 	getTime();
 	getDate();
@@ -140,8 +167,20 @@
 				.fadeIn(1000)
 				.end()
 				.appendTo("#slideshow");
-		}, 3000);
+		}, 8000);
 	});
+
+	$.ajax({
+		url: "/ajax/noticias",
+		type: "POST",
+		success: function (res) {
+			$('.noticia').each(function (i) {
+				$(this).find('.noticia-title').text(res.title[i]);
+				$(this).find('.noticia-desc').text(res.desc[i]);
+				$(this).find('.noticia-img').attr('src', res.img[i]);
+			});
+		}
+	})
 </script>
 
 </html>

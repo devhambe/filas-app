@@ -12,20 +12,6 @@ const con = mysql.createConnection({
 const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
-newsapi.v2
-	.topHeadlines({
-		country: "pt",
-		language: "pt",
-		pageSize: "3"
-	})
-	.then(res => {
-		for (k in res.articles) {
-			console.log(res.articles[k].title);
-			console.log(res.articles[k].description);
-			console.log(res.articles[k].urlToImage);
-		}
-	});
-
 function autenticar(req, res, page, nivel) {
 	if (req.session.loggedin) {
 		if (req.session.nivel == nivel || nivel == 0) {
@@ -60,6 +46,10 @@ router.get("/dashboard", (req, res) => {
 
 router.get("/register", (req, res) => {
 	autenticar(req, res, "register.ejs", 1);
+});
+
+router.get("/clientes", (req, res) => {
+	autenticar(req, res, "clientes.ejs", 0);
 });
 
 router.get("/balcoes", (req, res) => {
@@ -274,6 +264,84 @@ router.post("/ajax/operadores", (req, res) => {
 		});
 	} catch (err) {
 		res.redirect("/balcoes");
+	}
+});
+
+router.post("/ajax/clientes", (req, res) => {
+	try {
+		const sql = "SELECT * FROM clientes";
+		con.query(sql, function(err, result) {
+			if (err) throw err;
+			result = JSON.stringify(result);
+			res.send(result);
+		});
+	} catch (err) {
+		res.redirect("/clientes");
+	}
+});
+
+router.post("/ajax/clientes/add", (req, res) => {
+	try {
+		const sql = `INSERT INTO clientes (nome, apelido, morada, cod_postal, cidade, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+		con.query(
+			sql,
+			[
+				req.body.nome,
+				req.body.apelido,
+				req.body.morada,
+				req.body.cod_postal,
+				req.body.cidade,
+				req.body.email,
+				req.body.telefone
+			],
+			function(err, result) {
+				if (err) throw err;
+				result = JSON.stringify(result);
+				res.send(result);
+			}
+		);
+	} catch (err) {
+		res.redirect("/clientes");
+	}
+});
+
+router.post("/ajax/clientes/delete", (req, res) => {
+	try {
+		const sql = "DELETE FROM clientes where id = ?";
+		con.query(sql, [req.body.clienteId], function(err, result) {
+			if (err) throw err;
+			result = JSON.stringify(result);
+			res.send(result);
+		});
+	} catch (err) {
+		res.redirect("/clientes");
+	}
+});
+
+router.post("/ajax/noticias", (req, res) => {
+	try {
+		const noticias = {
+			title: [],
+			desc: [],
+			img: []
+		};
+		newsapi.v2
+			.topHeadlines({
+				country: "pt",
+				language: "pt",
+				pageSize: "5",
+				category: "general"
+			})
+			.then(news => {
+				for (k in news.articles) {
+					noticias.title.push(news.articles[k].title);
+					noticias.desc.push(news.articles[k].description);
+					noticias.img.push(news.articles[k].urlToImage);
+				}
+				res.send(noticias);
+			});
+	} catch (err) {
+		res.redirect("/painel");
 	}
 });
 

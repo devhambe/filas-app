@@ -11,6 +11,11 @@ body {
 	overflow-x: hidden;
 }
 
+.login {
+	background: #f2f2f2;
+	box-shadow: 10px 10px 0px -3px rgba(230, 227, 230, 1);
+}
+
 .form-login {
 	width: 100%;
 	max-width: 330px;
@@ -24,18 +29,7 @@ body {
 	height: auto;
 	padding: 10px;
 	font-size: 16px;
-}
-
-.div-buttons {
-	background-color: #f3f3f3;
-	padding: 15px 25px;
-	width: 100%;
-	max-width: 300px;
-	position: absolute;
-	transform: translate(-50%, -50%);
-	left: 50%;
-	top: 50%;
-	text-align: center;
+	margin-bottom: 10px;
 }
 
 .sidebar {
@@ -117,6 +111,7 @@ body {
 .fila .fila-desc {
 	border-right: 2px solid #e8e8e8;
 	margin: auto 0;
+	font-size: 1.2rem;
 }
 
 .fila .fila-espera {
@@ -146,13 +141,14 @@ body {
 }
 
 .relogio {
-	font-size: 22px;
+	font-size: 1.6rem;
 }
 
 .senha {
 	text-align: left;
 	background: #140a2c;
 	color: white;
+	padding-left: 15px;
 }
 
 .btn-custom {
@@ -184,8 +180,7 @@ body {
 	width: 800px;
 	height: 600px;
 	padding: 10px;
-	box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-	/* box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.4); */
+	display: inline-block;
 }
 
 #slideshow > div {
@@ -196,7 +191,33 @@ body {
 	bottom: 10px;
 }
 
-.jumbotron {
-	background: #140a2c;
-	color: white;
+.noticia-img-div {
+	max-width: inherit;
+	max-height: inherit;
+}
+
+.noticia-img {
+	max-width: 100%;
+	max-height: 100%;
+	display: block;
+	margin: auto;
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	height: 100%;
+}
+
+.btn-senha {
+	padding: 20px 25px;
+	font-size: 1.5rem;
+	margin-bottom: 15px;
+}
+
+#form-cliente {
+	display: none;
 }

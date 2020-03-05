@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -5,8 +6,6 @@ const session = require("express-session");
 const routes = require("./routes/routes");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-
-// TODO localhost?
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -33,7 +32,7 @@ app.use(
 
 app.use("/", routes);
 
-// Objeto com todas as filas
+// Objeto com todas as filas e contadores
 const filas = {
 	fila: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
 	senha: [{ cont: 1 }, { cont: 1 }, { cont: 1 }, { cont: 1 }]
@@ -49,8 +48,10 @@ function addToFila(socketId, filaAtual) {
 
 	const num = Object.keys(filas.fila[index]).length;
 	const senha = filas.senha[index].cont++;
+	const senhaUser = filaAtual + senha;
 	filas.fila[index][socketId] = senha;
 	io.to(filaAtual).emit("users-in-fila", num, filaAtual);
+	io.to(filaAtual).emit("user-senha", senhaUser);
 }
 
 // Método para remover um user da fila
@@ -182,8 +183,6 @@ io.on("connection", socket => {
 	socket.on("senha-atendida", fila => {
 		atenderSenha(fila);
 		updateDashboard();
-		// console.log(data);
-		// io.emit("painel-senhas", "A", "000", "---");
 	});
 
 	// EVENTO onDisconnect
@@ -193,8 +192,8 @@ io.on("connection", socket => {
 	});
 });
 
-server.listen(3000, function() {
-	console.log(new Date() + "\nServer a correr na porta 3000");
+server.listen(process.env.SERVER_PORT, process.env.SERVER_IP, function() {
+	console.log(
+		`Server ON no IP : ${process.env.SERVER_IP}:${process.env.SERVER_PORT}`
+	);
 });
-
-// TODO Clientes Prioritários

@@ -40,11 +40,16 @@ function populateUsers(elements, users) {
 
 function populateSenhas(elements, senhas) {
 	for (i in elements) {
+		const fila = senhas[i][0];
 		if (senhas[i][1] !== undefined) {
-			let senha = senhas[i][0] + senhas[i][1];
+			const senha = fila + senhas[i][1];
 			$(elements[i]).text(senha);
+			$(`button[data-fila='${fila}']`).prop("disabled", false);
+			const entrada = Date.now();
+			$("#timer").data("entrada", entrada.toString());
 		} else {
 			$(elements[i]).text("...");
+			$(`button[data-fila='${fila}']`).prop("disabled", true);
 		}
 	}
 }
@@ -70,6 +75,9 @@ function populatePainel(fila, senha, balcao) {
 		.fadeIn()
 		.fadeOut()
 		.fadeIn();
+
+	const audio_senha = document.getElementById("audio-senha");
+	audio_senha.play();
 }
 
 function mostrarFuncao(nivel, id) {
@@ -96,15 +104,4 @@ function mostrarFuncao(nivel, id) {
 		});
 	}
 	$(".funcao").text(funcao);
-}
-
-function serializeToJson($form) {
-	let serializedArray = $form.serializeArray();
-	let jsonObject = {};
-
-	$.map(serializedArray, function(n, i) {
-		jsonObject[n["name"]] = n["value"];
-	});
-
-	return jsonObject;
 }

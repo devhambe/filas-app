@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2020 at 11:28 PM
+-- Generation Time: Mar 04, 2020 at 10:47 PM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.10
 
@@ -40,8 +40,26 @@ CREATE TABLE `balcoes` (
 --
 
 INSERT INTO `balcoes` (`id`, `numero`, `estado`, `operador`) VALUES
-(2, '2', 0, 25),
-(4, '1', 1, 24);
+(2, '2', 1, 3),
+(4, '1', 1, 24),
+(5, '3', 1, 25);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `apelido` varchar(255) DEFAULT NULL,
+  `morada` varchar(255) DEFAULT NULL,
+  `cod_postal` varchar(255) DEFAULT NULL,
+  `cidade` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `telefone` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -98,6 +116,13 @@ ALTER TABLE `balcoes`
   ADD KEY `operador` (`operador`);
 
 --
+-- Indexes for table `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `niveis`
 --
 ALTER TABLE `niveis`
@@ -119,7 +144,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `balcoes`
 --
 ALTER TABLE `balcoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `clientes`
+--
+ALTER TABLE `clientes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `niveis`
@@ -131,7 +162,7 @@ ALTER TABLE `niveis`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css" />
+    <link rel="icon" href="favicon.ico">
+    <title>Clientes</title>
+</head>
+
+<body>
+    <div class="d-flex wrapper">
+
+        <%- include ('includes/sidebar') %>
+
+        <div class="container-fluid">
+            <div class="content">
+
+                <div class="row mt-5">
+                    <div class="col">
+                        <table class="table" id="table-clientes">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Apelido</th>
+                                    <th>Morada</th>
+                                    <th>Código Postal</th>
+                                    <th>Cidade</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Remover</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="https://kit.fontawesome.com/a747b443e5.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
+
+<script>
+    mostrarFuncao('<%= nivel %>', '<%= id %>');
+
+    let columns = [
+        { 'data': 'nome' },
+        { 'data': 'apelido' },
+        { 'data': 'morada' },
+        { 'data': 'cod_postal' },
+        { 'data': 'cidade' },
+        { 'data': 'email' },
+        { 'data': 'telefone' },
+        {
+            'data': 'id',
+            render: function (data, type, row) {
+                return "<a href='#' class='cliente-delete' data-id=" + data + "> <i class='fas fa-trash-alt'></i> </a>";
+            }
+            //TODO Editar clientes
+        }
+    ];
+
+    $('#table-clientes').DataTable({
+        'processing': true,
+        'serverSide': false,
+        'ajax': {
+            'url': "/ajax/clientes",
+            'type': "POST",
+            'dataSrc': ""
+        },
+        'columns': columns,
+        'responsive': true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese.json"
+        },
+        "autoWidth": false
+    });
+
+    $(document).on('click', '.cliente-delete', function () {
+        const clienteId = $(this).data('id');
+        const row = $(this).closest("tr");
+        $.ajax({
+            type: "POST",
+            url: "ajax/clientes/delete",
+            data: { clienteId: clienteId },
+            success: function (data) {
+                row.closest("tr").fadeOut(400, function () {
+                    $(this).remove();
+                });
+            }
+        });
+    });
+</script>
+
+</html>
