@@ -1,10 +1,25 @@
 require("dotenv").config();
+/** @module Express */
 const express = require("express");
+
+/** @module Path */
 const path = require("path");
+
+/**
+ * Instância do Express
+ * @instance */
 const app = express();
+
+/** @module Sessions Middleware de sessões para Express */
 const session = require("express-session");
+
+/** @module Routes */
 const routes = require("./routes/routes");
+
+/** @module Server */
 const server = require("http").createServer(app);
+
+/** @module SocketIO */
 const io = require("socket.io")(server);
 
 app.use(express.static(path.join(__dirname, "public")));

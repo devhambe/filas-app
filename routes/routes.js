@@ -1,21 +1,50 @@
 require("dotenv").config();
+/** @module Express */
 const express = require("express");
+
+/** @module ExpressRouter */
 const router = express.Router();
+
+/** @module Bcrypt */
 const bcrypt = require("bcrypt");
+
+/** @module Mysql */
 const mysql = require("mysql");
+
+/** @constant
+ *  @type {Connection}
+ */
 const con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
 	password: process.env.DB_PASS,
 	database: process.env.DB_DATABASE
 });
+
+/**
+ *  @module NewsAPI API de notícias
+ */
 const NewsAPI = require("newsapi");
+
+/**
+ * @constant
+ * @type {NewsAPI}
+ */
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 
+/**
+ * Método para autenticar o acesso às páginas
+ * Nivel 0 : Acesso a todos os níveis
+ * @param {Request} req
+ * @param {Response} res
+ * @param {string} page Página a ser renderizada, Ex. 'index.ejs'
+ * @param {number} nivel Nível de permissões do utilizador
+ */
 function autenticar(req, res, page, nivel) {
 	if (req.session.loggedin) {
 		if (req.session.nivel == nivel || nivel == 0) {
 			res.render(page, {
+				/** As variáveis passadas à página */
 				nome: req.session.nome,
 				nivel: req.session.nivel,
 				id: req.session.userId
@@ -28,36 +57,44 @@ function autenticar(req, res, page, nivel) {
 	}
 }
 
+/** Rota GET para o /index */
 router.get("/", (req, res) => {
 	res.render("index.ejs");
 });
 
+/** Rota GET para o /painel */
 router.get("/painel", (req, res) => {
 	autenticar(req, res, "painel.ejs", 0);
 });
 
+/** Rota GET para o /login */
 router.get("/login", (req, res) => {
 	res.render("login.ejs");
 });
 
+/** Rota GET para o /dashboard */
 router.get("/dashboard", (req, res) => {
 	autenticar(req, res, "dashboard.ejs", 0);
 });
 
+/** Rota GET para o /register */
 router.get("/register", (req, res) => {
 	autenticar(req, res, "register.ejs", 1);
 });
 
+/** Rota GET para o /clientes */
 router.get("/clientes", (req, res) => {
 	autenticar(req, res, "clientes.ejs", 0);
 });
 
+/** Rota GET para o /balcoes */
 router.get("/balcoes", (req, res) => {
 	autenticar(req, res, "balcoes.ejs", 1);
 });
 
+/** Rota GET para o /logout */
 router.get("/logout", (req, res) => {
-	// Session destroy
+	/** Session destroy */
 	req.session.destroy(function(e) {
 		if (e) {
 			console.log(e);
@@ -66,40 +103,69 @@ router.get("/logout", (req, res) => {
 	res.redirect("/login");
 });
 
+/** Rota POST para o /login */
 router.post("/login", (req, res) => {
-	const nome = req.body.nome;
+	const email = req.body.email;
 	const password = req.body.password;
-	async function checkUser(nome, password) {
-		con.query(
-			"SELECT id, nome, password, nivel FROM users WHERE nome = ?",
-			[nome],
-			async function(err, result) {
-				if (result.length > 0) {
-					const hashedPassword = result[0].password;
+	/**
+	 * Método para a verificação do utilizador na base de dados para o login
+	 * @param {string} email
+	 * @param {string} password
+	 */
+	async function checkUser(email, password) {
+		/**
+		 * Query à BD dos dados do utilizador para o login
+		 */
+		try {
+			con.query(
+				"SELECT id, nome, password, nivel FROM users WHERE email = ?",
+				[email],
+				async function(err, result) {
+					/**
+					 * Verificação da existência de um utilizador com o email dado
+					 */
+					if (result.length > 0) {
+						const hashedPassword = result[0].password;
 
-					const match = await bcrypt.compare(
-						password,
-						hashedPassword
-					);
+						/**
+						 * A password inserida é encriptada e comparada com a password encriptada na BD
+						 */
+						const match = await bcrypt.compare(
+							password,
+							hashedPassword
+						);
 
-					if (match) {
-						req.session.loggedin = true;
-						req.session.userId = result[0].id;
-						req.session.nome = result[0].nome;
-						req.session.nivel = result[0].nivel;
-						res.redirect("/dashboard");
+						/** Se for igual (se a password estiver certa):
+						 * As seguintes variáveis são atribuídas à sessão:
+						 * loggedin (true)
+						 * ID do utilizador
+						 * Nome do utilizador
+						 * Nível do utilizador
+						 */
+						if (match) {
+							req.session.loggedin = true;
+							req.session.userId = result[0].id;
+							req.session.nome = result[0].nome;
+							req.session.nivel = result[0].nivel;
+							res.redirect("/dashboard");
+						} else {
+							res.redirect("/login");
+						}
 					} else {
 						res.redirect("/login");
 					}
-				} else {
-					res.redirect("/login");
 				}
-			}
-		);
+			);
+		} catch (err) {
+			res.redirect("/login");
+		}
 	}
-	checkUser(nome, password);
+	checkUser(email, password);
 });
 
+/**
+ * Rota POST para o /register
+ */
 router.post("/register", async (req, res) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -119,6 +185,10 @@ router.post("/register", async (req, res) => {
 		res.redirect("/register");
 	}
 });
+
+/**
+ * Rotas para chamadas Ajax por POST
+ */
 
 router.post("/ajax/users", (req, res) => {
 	try {
