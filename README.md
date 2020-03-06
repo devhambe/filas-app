@@ -21,4 +21,5 @@ Arranje uma chave do NewsAPI em https://newsapi.org/
 
 ### Variáveis de ambiente
 Crie um ficheiro com o nome .env com as seguintes variáveis:
+
 ![ficheiro .env](https://imgur.com/2OQrY3n.png)
