@@ -141,7 +141,7 @@ body {
 }
 
 .relogio {
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 }
 
 .senha {
@@ -174,39 +174,54 @@ body {
 }
 
 #slideshow {
-	margin: auto;
+	/* margin: auto;
 	margin-top: 20px;
 	position: relative;
 	width: 800px;
 	height: 600px;
 	padding: 10px;
-	display: inline-block;
+	display: inline-block; */
+	/* display: flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	flex-direction: column; */
 }
 
 #slideshow > div {
-	position: absolute;
+	/* position: absolute;
 	top: 10px;
 	left: 10px;
 	right: 10px;
-	bottom: 10px;
+	bottom: 10px; */
 }
 
 .noticia {
-	width: 100%;
-	height: 100%;
+	/* width: inherit;
+	height: inherit; */
+	/* width: 50%; */
 }
 
 .noticia-img-div {
-	max-width: inherit;
-	max-height: inherit;
+	/* max-width: inherit;
+	max-height: inherit; */
+	/* display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden; */
 }
 
 .noticia-img {
-	max-width: 100%;
+	/* max-width: 100%;
 	width: auto;
 	height: auto;
 	display: block;
-	margin: auto;
+	margin: auto; */
+	/* flex-shrink: 0;
+	min-width: 100%;
+	min-height: 100%; */
+	max-height: 600px;
+	max-width: 700px;
 }
 
 .container {
