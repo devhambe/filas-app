@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 04, 2020 at 10:47 PM
--- Server version: 10.4.8-MariaDB
--- PHP Version: 7.3.10
+-- Generation Time: Mar 06, 2020 at 10:46 AM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -40,9 +40,7 @@ CREATE TABLE `balcoes` (
 --
 
 INSERT INTO `balcoes` (`id`, `numero`, `estado`, `operador`) VALUES
-(2, '2', 1, 3),
-(4, '1', 1, 24),
-(5, '3', 1, 25);
+(1, '1', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -99,10 +97,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nome`, `email`, `password`, `nivel`) VALUES
-(2, 'admin', 'admin@admin.com', '$2b$10$0vPhHpAH5NraHHhKU4mEseWxwaowoaQnMc9NHJPO2h8bAoIoz3cD6', 1),
-(3, 'operadorteste', 'operador@test.com', '$2b$10$fd5O.kzezWybQErgYAg8EuVsD50Jx9Ip867BNoKGHhvW3bAzyKAde', 2),
-(24, 'novooperador', 'aa@sa', '$2b$10$6bO7jXB2b84ZCRoACf5gH.Yus/UdWSrUBlFD4Uez0OxKBqaTwfKwy', 2),
-(25, '555', 'adalberto@email.com', '$2b$10$LJlYimR1FW4V7EGwPdLA1.Ym1yiZARj82S0wG0ttOY7EHIghB6RIa', 2);
+(1, 'admin', 'admin@admin.com', '$2b$10$0vPhHpAH5NraHHhKU4mEseWxwaowoaQnMc9NHJPO2h8bAoIoz3cD6', 1),
+(2, 'operadorteste', 'operador@test.com', '$2b$10$fd5O.kzezWybQErgYAg8EuVsD50Jx9Ip867BNoKGHhvW3bAzyKAde', 2);
 
 --
 -- Indexes for dumped tables
@@ -144,13 +140,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `balcoes`
 --
 ALTER TABLE `balcoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `niveis`
@@ -162,7 +158,7 @@ ALTER TABLE `niveis`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
